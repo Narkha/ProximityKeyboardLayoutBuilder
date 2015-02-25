@@ -101,7 +101,7 @@ public class HexagonalGrid {
 	public double distanceToOtherNodes(Node<Integer> node, boolean onlyWithContent) {
 		double totalDistance = 0;
 		for(Node<Integer> other: nodes) {
-			if (!onlyWithContent || other.isEmpty()) { 
+			if (! (onlyWithContent && other.isEmpty()) ) { 
 				totalDistance += node.distance(other);
 			}
 		}

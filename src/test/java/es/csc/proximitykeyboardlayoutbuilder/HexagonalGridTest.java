@@ -72,7 +72,7 @@ public class HexagonalGridTest {
 	public void testDistancesFullNodesRadiusOne() {
 		HexagonalGrid grid = new HexagonalGrid(1);
 
-		Integer[] indexes = generateRandomIndex(4, 0, 6);
+		Integer[] indexes = generateRandomIndex(3, 0, 6);
 		
 		Node<Integer> node = grid.getNodes().get( indexes[0] );
 		node.setContent(1);
