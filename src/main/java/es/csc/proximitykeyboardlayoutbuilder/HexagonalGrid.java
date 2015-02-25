@@ -12,7 +12,7 @@ package es.csc.proximitykeyboardlayoutbuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HexaGraph {
+public class HexagonalGrid {
 	public static final double INNER_RADIUS = 1.0;
 	public static final double OUTER_RADIUS = 2 / Math.sqrt(3);
 	public static final double NEIGHBOURS_DIAGONAL_Y = Math.sqrt(3);
@@ -27,8 +27,8 @@ public class HexaGraph {
 								};
 
 	
-	private List<HexaNode> nodes;
-	private List<List<HexaNode>> nodesByRadius;
+	private List<Node<Integer>> nodes;
+	private List<List<Node<Integer>>> nodesByRadius;
 	
 	/***
 	 *                                              /\
@@ -38,23 +38,23 @@ public class HexaGraph {
 	 * @param radius: defines the maximum distance in hexagons to any hexagon to the center.
 	 *                radius 0 corresponds to only one hexagon 
 	 */
-	public HexaGraph(int radius) {
-		nodes = new ArrayList<HexaNode>();
-		nodesByRadius = new ArrayList<List<HexaNode>>();
+	public HexagonalGrid(int radius) {
+		nodes = new ArrayList<Node<Integer>>();
+		nodesByRadius = new ArrayList<List<Node<Integer>>>();
 						
 		for (int r = 0; r <= radius; ++r) {
-			List<HexaNode> newNodes= createNodesInRadius(r);
+			List<Node<Integer>> newNodes= createNodesInRadius(r);
 			nodes.addAll(newNodes);
 			nodesByRadius.add(newNodes);
 		}
 		
 	}
 
-	private List<HexaNode> createNodesInRadius(int radius) {
-		List<HexaNode> listNodes = new ArrayList<HexaNode>();
+	private List<Node<Integer>> createNodesInRadius(int radius) {
+		List<Node<Integer>> listNodes = new ArrayList<Node<Integer>>();
 		
 		if (radius == 0) {
-			HexaNode node = new HexaNode(0, 0);
+			Node<Integer> node = new Node<Integer>(0, 0);
 			listNodes.add(node);			
 		}
 		else {
@@ -68,7 +68,7 @@ public class HexaGraph {
 					x += xShift;
 					y += yShift;
 					
-					HexaNode node = new HexaNode(x, y);
+					Node<Integer> node = new Node<Integer>(x, y);
 					listNodes.add(node);
 				}
 			}
@@ -87,7 +87,7 @@ public class HexaGraph {
 		return nodes.size();
 	}
 	
-	public List<HexaNode> getNodesInRadius(int r) {
+	public List<Node<Integer>> getNodesInRadius(int r) {
 		if (r > getRadius() || r < 0) {
 			throw new IndexOutOfBoundsException("Graph of radius " + getRadius());
 		}
@@ -98,9 +98,9 @@ public class HexaGraph {
 	/***
 	 * 
 	 */
-	public double distanceToOtherNodes(HexaNode node, boolean onlyWithContent) {
+	public double distanceToOtherNodes(Node<Integer> node, boolean onlyWithContent) {
 		double totalDistance = 0;
-		for(HexaNode other: nodes) {
+		for(Node<Integer> other: nodes) {
 			if (!onlyWithContent || other.isEmpty()) { 
 				totalDistance += node.distance(other);
 			}
@@ -108,7 +108,7 @@ public class HexaGraph {
 		return totalDistance;
 	}
 
-	public List<HexaNode> getNodes() {
+	public List<Node<Integer>> getNodes() {
 		return nodes;
 	}
 }

@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class KeyGraph {
-	private List<KeyNode> nodes;
+public class KeyFrecuencyGraph {
+	private List<Key> nodes;
 	private int[][] edges;
 
-	public KeyGraph(String keysFile, String sourceFile) throws IOException {
+	public KeyFrecuencyGraph(String keysFile, String sourceFile) throws IOException {
 		readNodes(keysFile);
 		buildEdges(sourceFile);
 	}
@@ -30,10 +30,10 @@ public class KeyGraph {
 	private void readNodes(String keysFile) throws IOException {
 		List<String> lines = Files.readAllLines(Paths.get(keysFile));
 		
-		nodes = new ArrayList<KeyNode>(lines.size());
+		nodes = new ArrayList<Key>(lines.size());
 		for(String line: lines) {
 			if (line.length() > 0) {
-				nodes.add( new KeyNode(line));
+				nodes.add( new Key(line));
 			}
 		}
 	}
@@ -110,8 +110,8 @@ public class KeyGraph {
 		return nodes.size();
 	}
 	
-	public KeyNode getNode(int index) {
-		return new KeyNode( nodes.get(index) );
+	public Key getKey(int index) {
+		return new Key( nodes.get(index) );
 	}
 	
 	public int getWeight(int key1, int key2) {

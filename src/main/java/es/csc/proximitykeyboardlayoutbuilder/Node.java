@@ -11,24 +11,24 @@ package es.csc.proximitykeyboardlayoutbuilder;
 
 import es.csc.geometry.Point;
 
-public class HexaNode {
+public class Node<E> {
 
 	private Point center;
-	private KeyNode content = null;
+	private E content = null;
 
-	public HexaNode(double x, double y) {
+	public Node(double x, double y) {
 		this.center = new Point(x, y);		
 	}
 	
-	public HexaNode(Point center) {
+	public Node(Point center) {
 		this.center = center;		
 	}
 	
-	public void setContent(KeyNode data) {
+	public void setContent(E data) {
 		content = data;
 	}
 	
-	public KeyNode getContent() {
+	public E getContent() {
 		return content;
 	}
 	
@@ -40,7 +40,7 @@ public class HexaNode {
 		return content == null;
 	}
 	
-	public double distance(HexaNode other) {
+	public double distance(Node<E> other) {
 		return this.center.distance(other.center);
 	}
 }

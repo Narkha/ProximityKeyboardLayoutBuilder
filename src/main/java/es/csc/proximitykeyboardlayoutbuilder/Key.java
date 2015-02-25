@@ -9,16 +9,16 @@
 
 package es.csc.proximitykeyboardlayoutbuilder;
 
-public class KeyNode {
+public class Key {
 	int weight;
 	String characters;
 	
-	public KeyNode(String characters) {
+	public Key(String characters) {
 		weight = 0;
 		this.characters = characters;
 	}
 	
-	public KeyNode(KeyNode other) {
+	public Key(Key other) {
 		this.weight = other.weight;
 		this.characters = other.characters;
 	}
@@ -38,7 +38,7 @@ public class KeyNode {
 	@Override
 	public boolean equals(Object other) {
 		return this.getClass() == other.getClass()
-				&& this.weight == ((KeyNode) other).weight 
-				&& this.characters.equals(((KeyNode) other).characters);
+				&& this.weight == ((Key) other).weight 
+				&& this.characters.equals(((Key) other).characters);
 	}
 }

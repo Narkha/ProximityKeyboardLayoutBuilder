@@ -15,28 +15,27 @@ import org.junit.Test;
 
 import es.csc.geometry.Point;
 
-public class HexaNodeTest {
+public class NodeTest {
 	@Test
 	public void testDistance() {		
-		HexaNode node1 = new HexaNode(0, 0);
+		Node<Integer> node1 = new Node<Integer>(0, 0);
 		assertEquals(0, node1.distance(node1), 0.00001);
 				
-		HexaNode node2 = new HexaNode( new Point(4, 3) );
+		Node<Integer> node2 = new Node<Integer>( new Point(4, 3) );
 		assertEquals(5, node1.distance(node2), 0.00001);
 	}
 	
 	@Test
 	public void testEmptyAfterConstrutor() {		
-		HexaNode node = new HexaNode(0, 0);
+		Node<Integer> node = new Node<Integer>(0, 0);
 		assertTrue(node.isEmpty());
 	}
 	
 	@Test
 	public void testReset() {		
-		HexaNode node = new HexaNode(0, 0);
+		Node<Integer> node = new Node<Integer>(0, 0);
 		
-		KeyNode data = new KeyNode("aa"); 
-		node.setContent( data );
+		node.setContent( 1 );
 		assertFalse(node.isEmpty());
 		
 		node.resetContent();

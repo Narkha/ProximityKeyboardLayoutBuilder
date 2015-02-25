@@ -14,12 +14,12 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 
-public class KeyNodeTest{
-	KeyNode node;
+public class KeyTest{
+	Key node;
 	
 	@Before
 	public void setUp() {
-		node = new KeyNode("abc");
+		node = new Key("abc");
 	}
 	
 	@Test
