@@ -57,14 +57,19 @@ public class HexagonalGridTest {
 	public void testDistancesAllNodesRadiusOne() {
 		HexagonalGrid grid = new HexagonalGrid(1);
 		
+		List<Node<Integer>> nodes = grid.getNodes();
+		for(Node<Integer> node : nodes) {
+			node.setContent(0);
+		}
+		
 		Node<Integer> center = grid.getNodesInRadius(0).get(0);
-		assertEquals(6 * 2 * HexagonalGrid.INNER_RADIUS, grid.distanceToOtherNodes(center, false), 0.00001);
+		assertEquals(6 * 2 * HexagonalGrid.INNER_RADIUS, grid.distanceToOtherNodes(center), 0.00001);
 		
 		List<Node<Integer>> listNodes = grid.getNodesInRadius(1);
 		for (Node<Integer> node : listNodes) {
 			assertEquals( 3 * 2 * HexagonalGrid.INNER_RADIUS
 							+ 2 * 3 * HexagonalGrid.OUTER_RADIUS
-							+ 4 * HexagonalGrid.INNER_RADIUS, grid.distanceToOtherNodes(node, false), 0.00001);
+							+ 4 * HexagonalGrid.INNER_RADIUS, grid.distanceToOtherNodes(node), 0.00001);
 		}
 	}
 	
@@ -85,7 +90,7 @@ public class HexagonalGridTest {
 			expectedDistances += node.distance(other);
 		}
 		
-		assertEquals(expectedDistances, grid.distanceToOtherNodes(node, true), 0.00001);
+		assertEquals(expectedDistances, grid.distanceToOtherNodes(node), 0.00001);
 	}
 
 	private Integer[] generateRandomIndex(int length, int floor, int ceiling) {

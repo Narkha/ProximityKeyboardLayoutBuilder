@@ -106,7 +106,7 @@ public class KeyFrecuencyGraph {
 	/***
 	 * @return the number of nodes
 	 */
-	public int getNodeSize() {
+	public int getNodesSize() {
 		return nodes.size();
 	}
 	

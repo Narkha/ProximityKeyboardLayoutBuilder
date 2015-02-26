@@ -96,16 +96,25 @@ public class HexagonalGrid {
 	}
 	
 	/***
-	 * 
+	 * Return the distance between this node and other non empty nodes
 	 */
-	public double distanceToOtherNodes(Node<Integer> node, boolean onlyWithContent) {
-		double totalDistance = 0;
-		for(Node<Integer> other: nodes) {
-			if (! (onlyWithContent && other.isEmpty()) ) { 
-				totalDistance += node.distance(other);
-			}
+	public double distanceToOtherNodes(Node<Integer> node) {
+		if (node.isEmpty()) {
+			return 0;
 		}
-		return totalDistance;
+		else {
+			double totalDistance = 0;
+			for(Node<Integer> other: nodes) {
+				if (!other.isEmpty()) { 
+					totalDistance += getDistance(node, other);
+				}
+			}
+			return totalDistance;
+		}
+	}
+
+	protected double getDistance(Node<Integer> node, Node<Integer> other) {
+		return node.distance(other);
 	}
 
 	public List<Node<Integer>> getNodes() {

@@ -21,7 +21,7 @@ public class KeyFrecuencyGraphTest {
 	public void configTest() throws IOException {
 		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/empty.in");
 		
-		assertEquals(3, graph.getNodeSize());
+		assertEquals(3, graph.getNodesSize());
 		assertEquals(new Key(" .,"), graph.getKey(0));
 		assertEquals(new Key("a"), graph.getKey(1));
 		assertEquals(new Key("uúü"), graph.getKey(2));
