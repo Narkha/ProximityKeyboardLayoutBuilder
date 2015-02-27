@@ -19,27 +19,27 @@ import java.util.List;
 
 
 public class KeyFrecuencyGraph {
-	private List<Key> nodes;
-	private int[][] edges;
+	private List<Key> keys;
+	private int[][] frecuencies;
 
 	public KeyFrecuencyGraph(String keysFile, String sourceFile) throws IOException {
-		readNodes(keysFile);
+		readKeys(keysFile);
 		buildEdges(sourceFile);
 	}
 
-	private void readNodes(String keysFile) throws IOException {
+	private void readKeys(String keysFile) throws IOException {
 		List<String> lines = Files.readAllLines(Paths.get(keysFile));
 		
-		nodes = new ArrayList<Key>(lines.size());
+		keys = new ArrayList<Key>(lines.size());
 		for(String line: lines) {
 			if (line.length() > 0) {
-				nodes.add( new Key(line));
+				keys.add( new Key(line));
 			}
 		}
 	}
 
 	private void buildEdges(String sourceFile) throws IOException {
-		edges = new int[nodes.size()][nodes.size()];
+		frecuencies = new int[keys.size()][keys.size()];
 
 		
 		BufferedReader input = null;
@@ -72,7 +72,7 @@ public class KeyFrecuencyGraph {
 					previousKey = -1;
 				}
 				else {									
-					nodes.get(actualKey).incWeight();
+					keys.get(actualKey).incWeight();
 					
 					if (previousKey >= 0) {
 						strengthenEdge(previousKey, actualKey);
@@ -85,8 +85,8 @@ public class KeyFrecuencyGraph {
 	}
 
 	private int getNodeIndex(char character) {
-		for (int i = 0; i < nodes.size(); ++i) {
-			if (nodes.get(i).containsCharacter(character)) {
+		for (int i = 0; i < keys.size(); ++i) {
+			if (keys.get(i).containsCharacter(character)) {
 				return i;
 			}
 		}
@@ -96,30 +96,30 @@ public class KeyFrecuencyGraph {
 
 	private void strengthenEdge(int key1, int key2) {
 		if (key1 <= key2) {
-			++edges[key1][key2];
+			++frecuencies[key1][key2];
 		}
 		else {
-			++edges[key2][key1];
+			++frecuencies[key2][key1];
 		}
 	}
 	
 	/***
-	 * @return the number of nodes
+	 * @return the number of keys
 	 */
-	public int getNodesSize() {
-		return nodes.size();
+	public int size() {
+		return keys.size();
 	}
 	
 	public Key getKey(int index) {
-		return new Key( nodes.get(index) );
+		return new Key( keys.get(index) );
 	}
 	
 	public int getWeight(int key1, int key2) {
 		if (key1 <= key2) {
-			return edges[key1][key2];
+			return frecuencies[key1][key2];
 		}
 		else  {
-			return edges[key2][key1];
+			return frecuencies[key2][key1];
 		}
 	}
 }
