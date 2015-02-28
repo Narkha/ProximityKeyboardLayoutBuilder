@@ -57,16 +57,16 @@ public class HexagonalGridTest {
 	public void testDistancesAllNodesRadiusOne() {
 		HexagonalGrid grid = new HexagonalGrid(1);
 		
-		List<Node<Integer>> nodes = grid.getNodes();
-		for(Node<Integer> node : nodes) {
-			node.setContent(0);
+		List<Node> nodes = grid.getNodes();
+		for(Node node : nodes) {
+			node.setContent( new Key("0") );
 		}
 		
-		Node<Integer> center = grid.getNodesInRadius(0).get(0);
+		Node center = grid.getNodesInRadius(0).get(0);
 		assertEquals(6 * 2 * HexagonalGrid.INNER_RADIUS, grid.distanceToOtherNodes(center), 0.00001);
 		
-		List<Node<Integer>> listNodes = grid.getNodesInRadius(1);
-		for (Node<Integer> node : listNodes) {
+		List<Node> listNodes = grid.getNodesInRadius(1);
+		for (Node node : listNodes) {
 			assertEquals( 3 * 2 * HexagonalGrid.INNER_RADIUS
 							+ 2 * 3 * HexagonalGrid.OUTER_RADIUS
 							+ 4 * HexagonalGrid.INNER_RADIUS, grid.distanceToOtherNodes(node), 0.00001);
@@ -79,13 +79,13 @@ public class HexagonalGridTest {
 
 		Integer[] indexes = generateRandomIndex(3, 0, 6);
 		
-		Node<Integer> node = grid.getNodes().get( indexes[0] );
-		node.setContent(1);
+		Node node = grid.getNodes().get( indexes[0] );
+		node.setContent( new Key("1") );
 		
 		double expectedDistances = 0;
 		for (int i = 1; i < indexes.length; ++i) {
-			Node<Integer> other = grid.getNodes().get( indexes[i] );
-			other.setContent(2);
+			Node other = grid.getNodes().get( indexes[i] );
+			other.setContent( new Key("2") );
 			
 			expectedDistances += node.distance(other);
 		}

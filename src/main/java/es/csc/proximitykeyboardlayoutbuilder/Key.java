@@ -10,25 +10,14 @@
 package es.csc.proximitykeyboardlayoutbuilder;
 
 public class Key {
-	int weight;
 	String characters;
 	
 	public Key(String characters) {
-		weight = 0;
 		this.characters = characters;
 	}
 	
 	public Key(Key other) {
-		this.weight = other.weight;
 		this.characters = other.characters;
-	}
-
-	public int getWeight() {
-		return weight;
-	}
-	
-	public void incWeight() {
-		++weight;
 	}
 
 	public boolean containsCharacter(char character) {
@@ -38,7 +27,6 @@ public class Key {
 	@Override
 	public boolean equals(Object other) {
 		return this.getClass() == other.getClass()
-				&& this.weight == ((Key) other).weight 
 				&& this.characters.equals(((Key) other).characters);
 	}
 }

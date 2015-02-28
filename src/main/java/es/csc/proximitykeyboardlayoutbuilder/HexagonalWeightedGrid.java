@@ -15,7 +15,7 @@ package es.csc.proximitykeyboardlayoutbuilder;
  * geometrical distance multiplied by the frecuency between both nodes
  *
  */
-public class HexagonalWeightedGrid extends HexagonalGrid 
+public class HexagonalWeightedGrid extends HexagonalGrid
 {
 
 	private KeyFrecuencyGraph weights;
@@ -27,9 +27,9 @@ public class HexagonalWeightedGrid extends HexagonalGrid
 	}
 	
 	@Override
-	protected double getDistance(Node<Integer> node1, Node<Integer> node2) {
+	protected double getDistance(Node node1, Node node2) {
 		return node1.distance(node2) 
-					* weights.getWeight(node1.getContent(), node2.getContent());
+					* weights.getFrecuency(node1.getContent(), node2.getContent());
 	}
 
 }

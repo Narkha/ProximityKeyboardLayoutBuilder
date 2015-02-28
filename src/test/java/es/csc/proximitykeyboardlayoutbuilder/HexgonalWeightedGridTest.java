@@ -26,21 +26,23 @@ public class HexgonalWeightedGridTest {
 		
 		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(1, frecuencies);
 		
-		List<Node<Integer>> nodes = grid.getNodes();
-		for(int i = 0, n = frecuencies.size(); i < n; ++i) {
-			nodes.get(i).setContent(i);
+		List<Key> keys = frecuencies.keys();
+		List<Node> nodes = grid.getNodes();
+		
+		for(int i = 0, n = keys.size(); i < n; ++i) {
+			nodes.get(i).setContent( keys.get(i) );
 		}
 		
 		double expetedDistanceFromZero = 
-				frecuencies.getWeight(0, 1) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
-				+ frecuencies.getWeight(0, 2) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
-				+ frecuencies.getWeight(0, 3) * (2 * HexagonalWeightedGrid.INNER_RADIUS);				
+				frecuencies.getFrecuency(keys.get(0), keys.get(1)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
+				+ frecuencies.getFrecuency(keys.get(0), keys.get(2)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
+				+ frecuencies.getFrecuency(keys.get(0), keys.get(3)) * (2 * HexagonalWeightedGrid.INNER_RADIUS);				
 		assertEquals(expetedDistanceFromZero, grid.distanceToOtherNodes(nodes.get(0)), 0.01);
 		
 		double expetedDistanceFromOne = 
-				frecuencies.getWeight(1, 0) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
-				+ frecuencies.getWeight(1, 2) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
-				+ frecuencies.getWeight(1, 3) * (3 * HexagonalWeightedGrid.OUTER_RADIUS);				
+				frecuencies.getFrecuency(keys.get(1), keys.get(0)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
+				+ frecuencies.getFrecuency(keys.get(1), keys.get(2)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
+				+ frecuencies.getFrecuency(keys.get(1), keys.get(3)) * (3 * HexagonalWeightedGrid.OUTER_RADIUS);				
 		assertEquals(expetedDistanceFromOne, grid.distanceToOtherNodes(nodes.get(1)), 0.01);
 	}
 

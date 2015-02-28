@@ -11,10 +11,10 @@ package es.csc.proximitykeyboardlayoutbuilder;
 
 import es.csc.geometry.Point;
 
-public class Node<E> {
+public class Node {
 
 	private Point center;
-	private E content = null;
+	private Key content = null;
 
 	public Node(double x, double y) {
 		this.center = new Point(x, y);		
@@ -24,11 +24,11 @@ public class Node<E> {
 		this.center = center;		
 	}
 	
-	public void setContent(E data) {
+	public void setContent(Key data) {
 		content = data;
 	}
 	
-	public E getContent() {
+	public Key getContent() {
 		return content;
 	}
 	
@@ -40,7 +40,7 @@ public class Node<E> {
 		return content == null;
 	}
 	
-	public double distance(Node<E> other) {
+	public double distance(Node other) {
 		return this.center.distance(other.center);
 	}
 }

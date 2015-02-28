@@ -15,38 +15,52 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class KeyFrecuencyGraph {
 	private List<Key> keys;
+	private HashMap<Key, Integer> keysIndex;
+	private int[] keyFrecuencies;
 	private int[][] frecuencies;
 
 	public KeyFrecuencyGraph(String keysFile, String sourceFile) throws IOException {
 		readKeys(keysFile);
-		buildEdges(sourceFile);
+		buildKeysIndex();
+		parseSource(sourceFile);
 	}
 
 	private void readKeys(String keysFile) throws IOException {
 		List<String> lines = Files.readAllLines(Paths.get(keysFile));
 		
-		keys = new ArrayList<Key>(lines.size());
+		keys = new ArrayList<Key>();
 		for(String line: lines) {
 			if (line.length() > 0) {
-				keys.add( new Key(line));
+				keys.add( new Key(line) );
 			}
+		}
+		
+		keys = Collections.unmodifiableList(keys);
+	}
+
+	private void buildKeysIndex() {
+		keysIndex = new HashMap<Key, Integer>();
+		for (int i = 0, n = keys.size(); i < n; ++i) {
+			keysIndex.put(keys.get(i), i);
 		}
 	}
 
-	private void buildEdges(String sourceFile) throws IOException {
-		frecuencies = new int[keys.size()][keys.size()];
-
+	private void parseSource(String sourceFile) throws IOException {
+		keyFrecuencies = new int[keysIndex.size()];
+		frecuencies = new int[keysIndex.size()][keysIndex.size()];
 		
 		BufferedReader input = null;
 		try {
 			input = new BufferedReader(new FileReader(sourceFile));
 			
-			buildEdges(input);
+			parseSource(input);
 		}
 		finally {
 			if (input != null) {
@@ -55,26 +69,25 @@ public class KeyFrecuencyGraph {
 		}
 	}
 
-	private void buildEdges(BufferedReader input) throws IOException {
-		int defaultKey = 0;
-		int previousKey = -1, actualKey = -1;
+	private void parseSource(BufferedReader input) throws IOException {
+		Key defaultKey = keys.get(0), previousKey = null, actualKey = null;
 		
 		String line;
 		while((line = input.readLine()) != null) {
 			for (int i = 0; i < line.length(); ++i) {
 				
 				char character = Character.toLowerCase(line.charAt(i));
-				actualKey = getNodeIndex(character);
-				if (actualKey == -1) {
-					if (previousKey != -1) {
+				actualKey = searchKey(character);
+				if (actualKey == null) {
+					if (previousKey != null) {
 						strengthenEdge(previousKey, defaultKey);
 					}
-					previousKey = -1;
+					previousKey = null;
 				}
-				else {									
-					keys.get(actualKey).incWeight();
+				else {		
+					++keyFrecuencies[ keysIndex.get(actualKey) ];
 					
-					if (previousKey >= 0) {
+					if (previousKey != null) {
 						strengthenEdge(previousKey, actualKey);
 					}
 					
@@ -84,42 +97,56 @@ public class KeyFrecuencyGraph {
 		}
 	}
 
-	private int getNodeIndex(char character) {
-		for (int i = 0; i < keys.size(); ++i) {
-			if (keys.get(i).containsCharacter(character)) {
-				return i;
+	private Key searchKey(char character) {
+		for(Key key : keys) {
+			if (key.containsCharacter(character)) {
+				return key;
 			}
 		}
 		
-		return -1;
+		return null;
 	}	
 
-	private void strengthenEdge(int key1, int key2) {
-		if (key1 <= key2) {
-			++frecuencies[key1][key2];
-		}
-		else {
-			++frecuencies[key2][key1];
-		}
+	private void strengthenEdge(Key key1, Key key2) {
+		int index1 = keysIndex.get(key1),
+				index2 = keysIndex.get(key2);
+				
+		++frecuencies[index1][index2];
+	}
+	
+	/**
+	 * 
+	 * @return the keys which frecuency is containded in the Grapsh
+	 *         any operation that modifies the list will throw UnsupportedOperationException.
+	 */
+	public List<Key> keys() {
+		return keys;
 	}
 	
 	/***
 	 * @return the number of keys
 	 */
 	public int size() {
-		return keys.size();
+		return keysIndex.size();
 	}
 	
-	public Key getKey(int index) {
-		return new Key( keys.get(index) );
+	public int getFrecuency(Key key) {
+		return keyFrecuencies[ keysIndex.get(key) ];
 	}
 	
-	public int getWeight(int key1, int key2) {
-		if (key1 <= key2) {
-			return frecuencies[key1][key2];
+	/**
+	 * @return the frecuency in whic key1 and key2 apperar toguether
+	 *         the order of the arguments is irrelenvant.
+	 */
+	public int getFrecuency(Key key1, Key key2) {
+		int index1 = keysIndex.get(key1),
+				index2 = keysIndex.get(key2);
+
+		if (index1 == index2) {
+			return frecuencies[index1][index2];
 		}
-		else  {
-			return frecuencies[key2][key1];
+		else {
+			return frecuencies[index1][index2] + frecuencies[index2][index1];
 		}
 	}
 }

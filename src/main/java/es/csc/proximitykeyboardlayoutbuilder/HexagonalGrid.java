@@ -27,8 +27,8 @@ public class HexagonalGrid {
 								};
 
 	
-	private List<Node<Integer>> nodes;
-	private List<List<Node<Integer>>> nodesByRadius;
+	private List<Node> nodes;
+	private List<List<Node>> nodesByRadius;
 	
 	/***
 	 *                                              /\
@@ -39,22 +39,22 @@ public class HexagonalGrid {
 	 *                radius 0 corresponds to only one hexagon 
 	 */
 	public HexagonalGrid(int radius) {
-		nodes = new ArrayList<Node<Integer>>();
-		nodesByRadius = new ArrayList<List<Node<Integer>>>();
+		nodes = new ArrayList<Node>();
+		nodesByRadius = new ArrayList<List<Node>>();
 						
 		for (int r = 0; r <= radius; ++r) {
-			List<Node<Integer>> newNodes= createNodesInRadius(r);
+			List<Node> newNodes= createNodesInRadius(r);
 			nodes.addAll(newNodes);
 			nodesByRadius.add(newNodes);
 		}
 		
 	}
 
-	private List<Node<Integer>> createNodesInRadius(int radius) {
-		List<Node<Integer>> listNodes = new ArrayList<Node<Integer>>();
+	private List<Node> createNodesInRadius(int radius) {
+		List<Node> listNodes = new ArrayList<Node>();
 		
 		if (radius == 0) {
-			Node<Integer> node = new Node<Integer>(0, 0);
+			Node node = new Node(0, 0);
 			listNodes.add(node);			
 		}
 		else {
@@ -68,7 +68,7 @@ public class HexagonalGrid {
 					x += xShift;
 					y += yShift;
 					
-					Node<Integer> node = new Node<Integer>(x, y);
+					Node node = new Node(x, y);
 					listNodes.add(node);
 				}
 			}
@@ -87,7 +87,7 @@ public class HexagonalGrid {
 		return nodes.size();
 	}
 	
-	public List<Node<Integer>> getNodesInRadius(int r) {
+	public List<Node> getNodesInRadius(int r) {
 		if (r > getRadius() || r < 0) {
 			throw new IndexOutOfBoundsException("Graph of radius " + getRadius());
 		}
@@ -98,13 +98,13 @@ public class HexagonalGrid {
 	/***
 	 * Return the distance between this node and other non empty nodes
 	 */
-	public double distanceToOtherNodes(Node<Integer> node) {
+	public double distanceToOtherNodes(Node node) {
 		if (node.isEmpty()) {
 			return 0;
 		}
 		else {
 			double totalDistance = 0;
-			for(Node<Integer> other: nodes) {
+			for(Node other: nodes) {
 				if (!other.isEmpty()) { 
 					totalDistance += getDistance(node, other);
 				}
@@ -113,11 +113,11 @@ public class HexagonalGrid {
 		}
 	}
 
-	protected double getDistance(Node<Integer> node, Node<Integer> other) {
+	protected double getDistance(Node node, Node other) {
 		return node.distance(other);
 	}
 
-	public List<Node<Integer>> getNodes() {
+	public List<Node> getNodes() {
 		return nodes;
 	}
 }

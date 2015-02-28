@@ -37,11 +37,4 @@ public class KeyTest{
 		assertFalse("should not found ' '", node.containsCharacter(' '));
 		assertFalse("should not found 'A'", node.containsCharacter('\n'));
 	}
-	
-	@Test
-	public void incWeight() {
-		assertEquals("Just created must be 0", 0, node.getWeight());
-		node.incWeight();
-		assertEquals(1, node.getWeight());
-	}
 }

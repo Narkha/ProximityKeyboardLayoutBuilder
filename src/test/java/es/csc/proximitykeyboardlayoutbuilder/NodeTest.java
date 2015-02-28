@@ -18,24 +18,24 @@ import es.csc.geometry.Point;
 public class NodeTest {
 	@Test
 	public void testDistance() {		
-		Node<Integer> node1 = new Node<Integer>(0, 0);
+		Node node1 = new Node(0, 0);
 		assertEquals(0, node1.distance(node1), 0.00001);
 				
-		Node<Integer> node2 = new Node<Integer>( new Point(4, 3) );
+		Node node2 = new Node( new Point(4, 3) );
 		assertEquals(5, node1.distance(node2), 0.00001);
 	}
 	
 	@Test
 	public void testEmptyAfterConstrutor() {		
-		Node<Integer> node = new Node<Integer>(0, 0);
+		Node node = new Node(0, 0);
 		assertTrue(node.isEmpty());
 	}
 	
 	@Test
 	public void testReset() {		
-		Node<Integer> node = new Node<Integer>(0, 0);
+		Node node = new Node(0, 0);
 		
-		node.setContent( 1 );
+		node.setContent( new Key("1") );
 		assertFalse(node.isEmpty());
 		
 		node.resetContent();
