@@ -112,8 +112,6 @@ public class KeyFrecuencyGraphTest {
 	    );
 	}
 	
-
-	
 	@Test
 	public void keysSortedByFrecuency() throws IOException {
 		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/keysSortedByFrecuency.in");

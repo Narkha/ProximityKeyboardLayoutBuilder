@@ -11,7 +11,9 @@ package es.csc.proximitykeyboardlayoutbuilder;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -77,14 +79,14 @@ public class HexagonalGridTest {
 	public void testDistancesFullNodesRadiusOne() {
 		HexagonalGrid grid = new HexagonalGrid(1);
 
-		Integer[] indexes = generateRandomIndex(3, 0, 6);
+		List<Integer> indexes = generateRandomIndex(3, 0, 6);
 		
-		Node node = grid.getNodes().get( indexes[0] );
+		Node node = grid.getNodes().get( indexes.get(0) );
 		node.setContent( new Key("1") );
 		
 		double expectedDistances = 0;
-		for (int i = 1; i < indexes.length; ++i) {
-			Node other = grid.getNodes().get( indexes[i] );
+		for (int i = 1; i < indexes.size(); ++i) {
+			Node other = grid.getNodes().get( indexes.get(i) );
 			other.setContent( new Key("2") );
 			
 			expectedDistances += node.distance(other);
@@ -92,21 +94,55 @@ public class HexagonalGridTest {
 		
 		assertEquals(expectedDistances, grid.distanceToOtherNodes(node), 0.00001);
 	}
+	
+	@Test
+	public void cloneTest() {
+		HexagonalGrid grid = generateRandomGrid();
+		HexagonalGrid clone = (HexagonalGrid) grid.clone();
+		
+		assertEquals(grid.getRadius(), clone.getRadius());
+		assertEquals(grid.getNumberNodes(), clone.getNumberNodes());
+		
+		Iterator<Node> gridNodes = grid.getNodes().iterator(),
+						cloneNodes = clone.getNodes().iterator();
+		
+		while(gridNodes.hasNext() && cloneNodes.hasNext()) {
+			Node node1 = gridNodes.next(),
+					node2 = cloneNodes.next();
+			assertNotSame(node1, node2);
+			assertEquals(0, node1.distance(node2), 0.0000001);
+			assertSame(node1.getContent(), node2.getContent());
+		}
+		
+	}
 
-	private Integer[] generateRandomIndex(int length, int floor, int ceiling) {
+	private HexagonalGrid generateRandomGrid() {
+		HexagonalGrid grid = new HexagonalGrid(2);
+		List<Node> nodes = grid.getNodesInRadius(2);
+		
+		List<Integer> indexes = generateRandomIndex(8, 0, 18);
+		
+		for (int i = 0, n = indexes.size(); i < n; ++i) {
+			Key key = new Key( Integer.toString(i) );
+			nodes.get(i).setContent(key);
+		}
+		
+		return grid;
+	}
+
+	private List<Integer> generateRandomIndex(int length, int floor, int ceiling) {
 		Random random = new Random();
 		
-		Set<Integer> result = new HashSet<Integer>();
+		Set<Integer> numbers = new HashSet<Integer>();
 		for (int i = 0; i < length; ++i) {
 			Integer number;
 			do {
 				number = random.nextInt(ceiling + 1) + floor;
-			} while( result.contains( number) ) ;
+			} while( numbers.contains(number) ) ;
 				
-			result.add(number);
+			numbers.add(number);
 		}
 		
-		return result.toArray( new Integer[0] );
-		
+		return new ArrayList<Integer>(numbers);		
 	}
 }

@@ -12,7 +12,7 @@ package es.csc.proximitykeyboardlayoutbuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HexagonalGrid {
+public class HexagonalGrid implements Cloneable {
 	public static final double INNER_RADIUS = 1.0;
 	public static final double OUTER_RADIUS = 2 / Math.sqrt(3);
 	public static final double NEIGHBOURS_DIAGONAL_Y = Math.sqrt(3);
@@ -78,7 +78,36 @@ public class HexagonalGrid {
 		return listNodes;
 	}
 	
+	@Override
+	public Object clone() {
+		try {
+			HexagonalGrid clone = (HexagonalGrid) super.clone();
+			
+			clone.nodes = new ArrayList<Node>();
+			clone.nodesByRadius = new ArrayList<List<Node>>();
+			for(List<Node> list: this.nodesByRadius) {
+				List<Node> listClone = deepCopy(list);
+				clone.nodes.addAll( listClone );
+				clone.nodesByRadius.add( listClone );
+			}
+			
+			return clone;
+			
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
 	
+	private List<Node> deepCopy(List<Node> list) {
+		List<Node> copy = new ArrayList<Node>();
+		
+		for(Node node : list) {
+			copy.add( (Node) node.clone() );
+		}
+		
+		return copy;
+	}
+
 	public int getRadius() {
 		return nodesByRadius.size() - 1;
 	}

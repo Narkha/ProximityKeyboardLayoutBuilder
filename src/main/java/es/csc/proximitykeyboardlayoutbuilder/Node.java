@@ -11,7 +11,7 @@ package es.csc.proximitykeyboardlayoutbuilder;
 
 import es.csc.geometry.Point;
 
-public class Node {
+public class Node implements Cloneable {
 
 	private Point center;
 	private Key content = null;
@@ -42,5 +42,14 @@ public class Node {
 	
 	public double distance(Node other) {
 		return this.center.distance(other.center);
+	}
+	
+	@Override
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 }

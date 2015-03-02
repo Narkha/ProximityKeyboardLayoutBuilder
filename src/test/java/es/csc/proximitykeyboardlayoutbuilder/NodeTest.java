@@ -41,5 +41,26 @@ public class NodeTest {
 		node.resetContent();
 		assertTrue(node.isEmpty());
 	}
+	
+	@Test 
+	public void cloneEmpty() {
+		Node node = new Node(1,1);
+		Node clone = (Node) node.clone();
+				
+		assertNotSame(node, clone);
+		assertEquals(0, node.distance(clone), 0.0000001);
+		assertEquals(null, clone.getContent()); 
+	}
+	
+	@Test 
+	public void cloneNonEmpty() {
+		Node node = new Node(1,1);
+		node.setContent( new Key(" ") );
+		Node clone = (Node) node.clone();
+				
+		assertNotSame(node, clone);
+		assertEquals(0, node.distance(clone), 0.0000001);
+		assertSame(node.getContent(), clone.getContent()); 
+	}
 
 }

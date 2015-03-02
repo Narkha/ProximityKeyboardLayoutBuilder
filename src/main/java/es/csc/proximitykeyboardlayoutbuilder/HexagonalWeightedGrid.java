@@ -16,8 +16,7 @@ package es.csc.proximitykeyboardlayoutbuilder;
  *
  */
 public class HexagonalWeightedGrid extends HexagonalGrid
-{
-
+									implements Cloneable {
 	private KeyFrecuencyGraph weights;
 
 	public HexagonalWeightedGrid(int radius, KeyFrecuencyGraph weights) {
@@ -31,5 +30,4 @@ public class HexagonalWeightedGrid extends HexagonalGrid
 		return node1.distance(node2) 
 					* weights.getFrecuency(node1.getContent(), node2.getContent());
 	}
-
 }
