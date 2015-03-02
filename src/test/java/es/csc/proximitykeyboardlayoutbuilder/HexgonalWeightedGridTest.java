@@ -27,7 +27,7 @@ public class HexgonalWeightedGridTest {
 		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(1, frecuencies);
 		
 		List<Key> keys = frecuencies.keys();
-		List<Node> nodes = grid.getNodes();
+		List<Node> nodes = grid.nodes();
 		
 		for(int i = 0, n = keys.size(); i < n; ++i) {
 			nodes.get(i).setContent( keys.get(i) );

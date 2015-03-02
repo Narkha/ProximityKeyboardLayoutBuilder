@@ -25,33 +25,33 @@ public class HexagonalGridTest {
 	@Test
 	public void testNumberNodesRadiusZero() {
 		HexagonalGrid grid = new HexagonalGrid(0);
-		assertEquals(1, grid.getNumberNodes());
-		assertEquals(1, grid.getNodesInRadius(0).size());
+		assertEquals(1, grid.size());
+		assertEquals(1, grid.nodesInRadius(0).size());
 	}
 
 	@Test
 	public void testNumberNodesRadiusOne() {
 		HexagonalGrid grid = new HexagonalGrid(1);
-		assertEquals(7, grid.getNumberNodes());
-		assertEquals(1, grid.getNodesInRadius(0).size());
-		assertEquals(6, grid.getNodesInRadius(1).size());
+		assertEquals(7, grid.size());
+		assertEquals(1, grid.nodesInRadius(0).size());
+		assertEquals(6, grid.nodesInRadius(1).size());
 	}
 	
 
 	@Test
 	public void testNumberNodesRadius2() {
 		HexagonalGrid grid = new HexagonalGrid(2);
-		assertEquals(19, grid.getNumberNodes());
-		assertEquals(1, grid.getNodesInRadius(0).size());
-		assertEquals(6, grid.getNodesInRadius(1).size());
-		assertEquals(12, grid.getNodesInRadius(2).size());
+		assertEquals(19, grid.size());
+		assertEquals(1, grid.nodesInRadius(0).size());
+		assertEquals(6, grid.nodesInRadius(1).size());
+		assertEquals(12, grid.nodesInRadius(2).size());
 	}
 	
 	@Test
 	public void testRadiusGrap() {
 		for (int r = 0; r < 3; ++r) {
 			HexagonalGrid grid = new HexagonalGrid(r);
-			assertEquals(r, grid.getRadius());
+			assertEquals(r, grid.radius());
 		}
 	}
 	
@@ -59,15 +59,15 @@ public class HexagonalGridTest {
 	public void testDistancesAllNodesRadiusOne() {
 		HexagonalGrid grid = new HexagonalGrid(1);
 		
-		List<Node> nodes = grid.getNodes();
+		List<Node> nodes = grid.nodes();
 		for(Node node : nodes) {
 			node.setContent( new Key("0") );
 		}
 		
-		Node center = grid.getNodesInRadius(0).get(0);
+		Node center = grid.nodesInRadius(0).get(0);
 		assertEquals(6 * 2 * HexagonalGrid.INNER_RADIUS, grid.distanceToOtherNodes(center), 0.00001);
 		
-		List<Node> listNodes = grid.getNodesInRadius(1);
+		List<Node> listNodes = grid.nodesInRadius(1);
 		for (Node node : listNodes) {
 			assertEquals( 3 * 2 * HexagonalGrid.INNER_RADIUS
 							+ 2 * 3 * HexagonalGrid.OUTER_RADIUS
@@ -81,12 +81,12 @@ public class HexagonalGridTest {
 
 		List<Integer> indexes = generateRandomIndex(3, 0, 6);
 		
-		Node node = grid.getNodes().get( indexes.get(0) );
+		Node node = grid.nodes().get( indexes.get(0) );
 		node.setContent( new Key("1") );
 		
 		double expectedDistances = 0;
 		for (int i = 1; i < indexes.size(); ++i) {
-			Node other = grid.getNodes().get( indexes.get(i) );
+			Node other = grid.nodes().get( indexes.get(i) );
 			other.setContent( new Key("2") );
 			
 			expectedDistances += node.distance(other);
@@ -100,11 +100,11 @@ public class HexagonalGridTest {
 		HexagonalGrid grid = generateRandomGrid();
 		HexagonalGrid clone = (HexagonalGrid) grid.clone();
 		
-		assertEquals(grid.getRadius(), clone.getRadius());
-		assertEquals(grid.getNumberNodes(), clone.getNumberNodes());
+		assertEquals(grid.radius(), clone.radius());
+		assertEquals(grid.size(), clone.size());
 		
-		Iterator<Node> gridNodes = grid.getNodes().iterator(),
-						cloneNodes = clone.getNodes().iterator();
+		Iterator<Node> gridNodes = grid.nodes().iterator(),
+						cloneNodes = clone.nodes().iterator();
 		
 		while(gridNodes.hasNext() && cloneNodes.hasNext()) {
 			Node node1 = gridNodes.next(),
@@ -118,7 +118,7 @@ public class HexagonalGridTest {
 
 	private HexagonalGrid generateRandomGrid() {
 		HexagonalGrid grid = new HexagonalGrid(2);
-		List<Node> nodes = grid.getNodesInRadius(2);
+		List<Node> nodes = grid.nodesInRadius(2);
 		
 		List<Integer> indexes = generateRandomIndex(8, 0, 18);
 		

@@ -27,8 +27,8 @@ public class HexagonalGrid implements Cloneable {
 								};
 
 	
-	private List<Node> nodes;
-	private List<List<Node>> nodesByRadius;
+	private ArrayList<Node> nodes;
+	private ArrayList<ArrayList<Node>> nodesByRadius;
 	
 	/***
 	 *                                              /\
@@ -40,18 +40,18 @@ public class HexagonalGrid implements Cloneable {
 	 */
 	public HexagonalGrid(int radius) {
 		nodes = new ArrayList<Node>();
-		nodesByRadius = new ArrayList<List<Node>>();
+		nodesByRadius = new ArrayList<ArrayList<Node>>();
 						
 		for (int r = 0; r <= radius; ++r) {
-			List<Node> newNodes= createNodesInRadius(r);
+			ArrayList<Node> newNodes= createNodesInRadius(r);
 			nodes.addAll(newNodes);
 			nodesByRadius.add(newNodes);
 		}
 		
 	}
 
-	private List<Node> createNodesInRadius(int radius) {
-		List<Node> listNodes = new ArrayList<Node>();
+	private ArrayList<Node> createNodesInRadius(int radius) {
+		ArrayList<Node> listNodes = new ArrayList<Node>();
 		
 		if (radius == 0) {
 			Node node = new Node(0, 0);
@@ -84,9 +84,9 @@ public class HexagonalGrid implements Cloneable {
 			HexagonalGrid clone = (HexagonalGrid) super.clone();
 			
 			clone.nodes = new ArrayList<Node>();
-			clone.nodesByRadius = new ArrayList<List<Node>>();
+			clone.nodesByRadius = new ArrayList<ArrayList<Node>>();
 			for(List<Node> list: this.nodesByRadius) {
-				List<Node> listClone = deepCopy(list);
+				ArrayList<Node> listClone = deepCopy(list);
 				clone.nodes.addAll( listClone );
 				clone.nodesByRadius.add( listClone );
 			}
@@ -98,8 +98,8 @@ public class HexagonalGrid implements Cloneable {
 		}
 	}
 	
-	private List<Node> deepCopy(List<Node> list) {
-		List<Node> copy = new ArrayList<Node>();
+	private ArrayList<Node> deepCopy(List<Node> list) {
+		ArrayList<Node> copy = new ArrayList<Node>();
 		
 		for(Node node : list) {
 			copy.add( (Node) node.clone() );
@@ -108,20 +108,21 @@ public class HexagonalGrid implements Cloneable {
 		return copy;
 	}
 
-	public int getRadius() {
+	public int radius() {
 		return nodesByRadius.size() - 1;
 	}
 	
-	public int getNumberNodes() {
+	public int size() {
 		return nodes.size();
 	}
 	
-	public List<Node> getNodesInRadius(int r) {
-		if (r > getRadius() || r < 0) {
-			throw new IndexOutOfBoundsException("Graph of radius " + getRadius());
+	@SuppressWarnings("unchecked")
+	public List<Node> nodesInRadius(int r) {
+		if (r > radius() || r < 0) {
+			throw new IndexOutOfBoundsException("Graph of radius " + radius());
 		}
 		
-		return nodesByRadius.get(r);
+		return (List<Node>) nodesByRadius.get(r).clone();
 	}
 	
 	/***
@@ -135,18 +136,19 @@ public class HexagonalGrid implements Cloneable {
 			double totalDistance = 0;
 			for(Node other: nodes) {
 				if (!other.isEmpty()) { 
-					totalDistance += getDistance(node, other);
+					totalDistance += distance(node, other);
 				}
 			}
 			return totalDistance;
 		}
 	}
 
-	protected double getDistance(Node node, Node other) {
+	protected double distance(Node node, Node other) {
 		return node.distance(other);
 	}
 
-	public List<Node> getNodes() {
-		return nodes;
+	@SuppressWarnings("unchecked")
+	public List<Node> nodes() {
+		return (List<Node>) nodes.clone();
 	}
 }

@@ -26,7 +26,7 @@ public class HexagonalWeightedGrid extends HexagonalGrid
 	}
 	
 	@Override
-	protected double getDistance(Node node1, Node node2) {
+	protected double distance(Node node1, Node node2) {
 		return node1.distance(node2) 
 					* weights.getFrecuency(node1.getContent(), node2.getContent());
 	}
