@@ -150,16 +150,14 @@ public class KeyFrecuencyGraph {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Key> keysSortedByFrecuency() {
-		List<Key> sortedKeys = (List<Key>) keys.clone();
-		
 		class KeysComparator implements java.util.Comparator<Key> {
 			public int compare(Key key1, Key key2) {
 		        return getFrecuency(key1) - getFrecuency(key2);
 			}			
 		}		
-		
+
+		List<Key> sortedKeys = (List<Key>) keys.clone();
 		Collections.sort(sortedKeys, Collections.reverseOrder( new KeysComparator() ));
-		
 		return sortedKeys;
 	}
 }
