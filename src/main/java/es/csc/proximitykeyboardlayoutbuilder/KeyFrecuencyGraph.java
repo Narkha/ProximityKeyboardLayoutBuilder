@@ -21,7 +21,7 @@ import java.util.List;
 
 
 public class KeyFrecuencyGraph {
-	private List<Key> keys;
+	private ArrayList<Key> keys;
 	private HashMap<Key, Integer> keysIndex;
 	private int[] keyFrecuencies;
 	private int[][] frecuencies;
@@ -41,8 +41,6 @@ public class KeyFrecuencyGraph {
 				keys.add( new Key(line) );
 			}
 		}
-		
-		keys = Collections.unmodifiableList(keys);
 	}
 
 	private void buildKeysIndex() {
@@ -114,13 +112,9 @@ public class KeyFrecuencyGraph {
 		++frecuencies[index1][index2];
 	}
 	
-	/**
-	 * 
-	 * @return the keys which frecuency is containded in the Grapsh
-	 *         any operation that modifies the list will throw UnsupportedOperationException.
-	 */
+	@SuppressWarnings("unchecked")
 	public List<Key> keys() {
-		return keys;
+		return (List<Key>) keys.clone();
 	}
 	
 	/***
@@ -148,5 +142,24 @@ public class KeyFrecuencyGraph {
 		else {
 			return frecuencies[index1][index2] + frecuencies[index2][index1];
 		}
+	}
+
+	/***
+	 * 
+	 * @return keys sorted by descending frecuency
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Key> keysSortedByFrecuency() {
+		List<Key> sortedKeys = (List<Key>) keys.clone();
+		
+		class KeysComparator implements java.util.Comparator<Key> {
+			public int compare(Key key1, Key key2) {
+		        return getFrecuency(key1) - getFrecuency(key2);
+			}			
+		}		
+		
+		Collections.sort(sortedKeys, Collections.reverseOrder( new KeysComparator() ));
+		
+		return sortedKeys;
 	}
 }

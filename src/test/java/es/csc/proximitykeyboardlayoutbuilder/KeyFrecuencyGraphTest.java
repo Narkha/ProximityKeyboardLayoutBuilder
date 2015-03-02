@@ -92,9 +92,6 @@ public class KeyFrecuencyGraphTest {
 	    );
 	}
 	
-
-	
-
 	@Test
 	public void otherCharactersUppercaseSoruceFile() throws IOException {
 		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/otherCharactersUppercase.in");
@@ -113,5 +110,28 @@ public class KeyFrecuencyGraphTest {
 							              {graph.getFrecuency(keys.get(1), keys.get(0)), graph.getFrecuency(keys.get(1), keys.get(1)), graph.getFrecuency(keys.get(1), keys.get(2))},
 							              {graph.getFrecuency(keys.get(2), keys.get(0)), graph.getFrecuency(keys.get(2), keys.get(1)), graph.getFrecuency(keys.get(2), keys.get(2))}}
 	    );
+	}
+	
+
+	
+	@Test
+	public void keysSortedByFrecuency() throws IOException {
+		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/keysSortedByFrecuency.in");
+				
+		List<Key> keys = graph.keys();
+		
+		assertEquals(3, graph.getFrecuency(keys.get(0)));
+		assertEquals(2, graph.getFrecuency(keys.get(1)));
+		assertEquals(8, graph.getFrecuency(keys.get(2)));
+		
+		List<Key> keysByFrecueny = graph.keysSortedByFrecuency();
+		
+		assertEquals(keys.get(0), keysByFrecueny.get(1));
+		assertEquals(keys.get(1), keysByFrecueny.get(2));
+		assertEquals(keys.get(2), keysByFrecueny.get(0));
+		
+		assertEquals(8, graph.getFrecuency(keysByFrecueny.get(0)) );		
+		assertEquals(3, graph.getFrecuency(keysByFrecueny.get(1)) );
+		assertEquals(2, graph.getFrecuency(keysByFrecueny.get(2)) );
 	}
 }
