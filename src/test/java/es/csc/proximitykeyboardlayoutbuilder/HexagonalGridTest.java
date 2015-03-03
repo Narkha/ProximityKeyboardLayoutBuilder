@@ -77,10 +77,10 @@ public class HexagonalGridTest {
 	}
 	
 	@Test
-	public void distancesDomeNodesRadiusOne() {
+	public void distancesSomeNodesRadiusOne() {
 		HexagonalGrid grid = new HexagonalGrid(1);
 
-		List<Integer> indexes = generateRandomIndex(3, 0, 6);
+		List<Integer> indexes = generateRandomIndex(3, 0, grid.size());
 		for (Integer index : indexes){
 			grid.nodes().get(index).setContent( new Key( Integer.toString(index) ) );
 		}
@@ -95,9 +95,22 @@ public class HexagonalGridTest {
 		
 		assertEquals(expectedDistances, grid.distanceFrom(node), 0.00001);
 	}
+	
+	@Test
+	public void totalDistance() {
+		HexagonalGrid grid = generateRandomGrid(2);
+
+		double expectedDistance = 0;
+		for (Node node : grid.nodes()) {
+			expectedDistance += grid.distanceFrom(node);
+		}
+		expectedDistance /= 2;
+		
+		assertEquals(expectedDistance, grid.totalDistance(), 0.000001);
+	}
 		
 	@Test
-	public void expandGrpah() {
+	public void expandGraph() {
 		HexagonalGrid grid = new HexagonalGrid(1);
 		
 		grid.expand();
@@ -149,7 +162,7 @@ public class HexagonalGridTest {
 	
 	@Test
 	public void testClone() {
-		HexagonalGrid grid = generateRandomGrid();
+		HexagonalGrid grid = generateRandomGrid(2);
 		HexagonalGrid clone = (HexagonalGrid) grid.clone();
 		
 		assertEquals(grid.radius(), clone.radius());
@@ -168,11 +181,11 @@ public class HexagonalGridTest {
 		
 	}
 
-	private HexagonalGrid generateRandomGrid() {
-		HexagonalGrid grid = new HexagonalGrid(2);
-		List<Node> nodes = grid.nodesInRadius(2);
+	private HexagonalGrid generateRandomGrid(int radius) {
+		HexagonalGrid grid = new HexagonalGrid(radius);
+		List<Node> nodes = grid.nodes();
 		
-		List<Integer> indexes = generateRandomIndex(8, 0, 18);
+		List<Integer> indexes = generateRandomIndex(grid.size() / 2, 0, grid.size());
 		
 		for (int i = 0, n = indexes.size(); i < n; ++i) {
 			Key key = new Key( Integer.toString(i) );

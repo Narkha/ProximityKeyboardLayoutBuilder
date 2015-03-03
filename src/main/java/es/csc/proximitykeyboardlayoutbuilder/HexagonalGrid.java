@@ -149,6 +149,28 @@ public class HexagonalGrid implements Cloneable {
 			return totalDistance;
 		}
 	}
+	
+	/**
+	 * 
+	 * @return the distance between all the non empty nodes
+	 */
+	public double totalDistance() {
+		Node node1, node2;
+		double totalDistance = 0;
+		for (int i = 0, n = size(); i < n; ++i) {
+			node1 = nodes.get(i);
+			if (!node1.isEmpty()) {
+				for (int j = i + 1; j < n; ++j) {
+					node2 = nodes.get(j);
+					if (!node2.isEmpty()) {
+						totalDistance += distance( nodes.get(i), nodes.get(j));
+					}
+				}
+			}
+		}
+		
+		return totalDistance;
+	}
 
 	protected double distance(Node node, Node other) {
 		return node.distance(other);
