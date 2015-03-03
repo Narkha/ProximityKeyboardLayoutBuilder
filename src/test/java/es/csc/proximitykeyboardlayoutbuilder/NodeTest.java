@@ -17,7 +17,7 @@ import es.csc.geometry.Point;
 
 public class NodeTest {
 	@Test
-	public void testDistance() {		
+	public void distance() {		
 		Node node1 = new Node(0, 0);
 		assertEquals(0, node1.distance(node1), 0.00001);
 				
@@ -26,13 +26,13 @@ public class NodeTest {
 	}
 	
 	@Test
-	public void testEmptyAfterConstrutor() {		
+	public void emptyAfterConstrutor() {		
 		Node node = new Node(0, 0);
 		assertTrue(node.isEmpty());
 	}
 	
 	@Test
-	public void testReset() {		
+	public void reset() {		
 		Node node = new Node(0, 0);
 		
 		node.setContent( new Key("1") );

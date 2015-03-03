@@ -43,11 +43,14 @@ public class HexagonalGrid implements Cloneable {
 		nodesByRadius = new ArrayList<ArrayList<Node>>();
 						
 		for (int r = 0; r <= radius; ++r) {
-			ArrayList<Node> newNodes= createNodesInRadius(r);
-			nodes.addAll(newNodes);
-			nodesByRadius.add(newNodes);
+			addRadius(r);
 		}
 		
+	}
+	private void addRadius(int r) {
+		ArrayList<Node> newNodes= createNodesInRadius(r);
+		nodes.addAll(newNodes);
+		nodesByRadius.add(newNodes);
 	}
 
 	private ArrayList<Node> createNodesInRadius(int radius) {
@@ -58,8 +61,8 @@ public class HexagonalGrid implements Cloneable {
 			listNodes.add(node);			
 		}
 		else {
-			Double x = - INNER_RADIUS * radius;
-			Double y = NEIGHBOURS_DIAGONAL_Y * radius;
+			double x = - INNER_RADIUS * radius;
+			double y = NEIGHBOURS_DIAGONAL_Y * radius;
 			
 			for(int i = 0; i < DIRECTION_SHIFT.length; ++i) {
 				double xShift = DIRECTION_SHIFT[i][0];
@@ -107,6 +110,10 @@ public class HexagonalGrid implements Cloneable {
 		
 		return copy;
 	}
+	
+	public void expand() {
+		addRadius(radius() + 1);
+	}
 
 	public int radius() {
 		return nodesByRadius.size() - 1;
@@ -128,7 +135,7 @@ public class HexagonalGrid implements Cloneable {
 	/***
 	 * Return the distance between this node and other non empty nodes
 	 */
-	public double distanceToOtherNodes(Node node) {
+	public double distanceFrom(Node node) {
 		if (node.isEmpty()) {
 			return 0;
 		}

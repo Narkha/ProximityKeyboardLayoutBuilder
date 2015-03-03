@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 public class KeyFrecuencyGraphTest {
 	
 	@Test
-	public void configTest() throws IOException {
+	public void config() throws IOException {
 		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/empty.in");
 		
 		assertEquals(3, graph.size());
@@ -32,7 +32,7 @@ public class KeyFrecuencyGraphTest {
 	}
 	
 	@Test
-	public void singleLineSorceTest() throws IOException {
+	public void singleLineSorce() throws IOException {
 		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/singleLine.in");
 		
 		List<Key> keys = graph.keys();
@@ -52,7 +52,7 @@ public class KeyFrecuencyGraphTest {
 	}
 	
 	@Test
-	public void multipleLinesSourceTest() throws IOException {
+	public void multipleLinesSource() throws IOException {
 		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/multipleLines.in");
 		
 		List<Key> keys = graph.keys();
@@ -73,7 +73,7 @@ public class KeyFrecuencyGraphTest {
 	
 
 	@Test
-	public void otherCharactersSoruceFile() throws IOException {
+	public void otherCharacters() throws IOException {
 		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/otherCharacters.in");
 				
 		List<Key> keys = graph.keys();
@@ -93,7 +93,7 @@ public class KeyFrecuencyGraphTest {
 	}
 	
 	@Test
-	public void otherCharactersUppercaseSoruceFile() throws IOException {
+	public void otherCharactersUppercase() throws IOException {
 		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/otherCharactersUppercase.in");
 				
 		List<Key> keys = graph.keys();

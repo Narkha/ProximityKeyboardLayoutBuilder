@@ -37,13 +37,13 @@ public class HexgonalWeightedGridTest {
 				frecuencies.getFrecuency(keys.get(0), keys.get(1)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
 				+ frecuencies.getFrecuency(keys.get(0), keys.get(2)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
 				+ frecuencies.getFrecuency(keys.get(0), keys.get(3)) * (2 * HexagonalWeightedGrid.INNER_RADIUS);				
-		assertEquals(expetedDistanceFromZero, grid.distanceToOtherNodes(nodes.get(0)), 0.01);
+		assertEquals(expetedDistanceFromZero, grid.distanceFrom(nodes.get(0)), 0.01);
 		
 		double expetedDistanceFromOne = 
 				frecuencies.getFrecuency(keys.get(1), keys.get(0)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
 				+ frecuencies.getFrecuency(keys.get(1), keys.get(2)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
 				+ frecuencies.getFrecuency(keys.get(1), keys.get(3)) * (3 * HexagonalWeightedGrid.OUTER_RADIUS);				
-		assertEquals(expetedDistanceFromOne, grid.distanceToOtherNodes(nodes.get(1)), 0.01);
+		assertEquals(expetedDistanceFromOne, grid.distanceFrom(nodes.get(1)), 0.01);
 	}
 
 }
