@@ -20,8 +20,8 @@ public class HexgonalWeightedGridTest {
 
 	@Test
 	public void weightedDistances() throws IOException {
-		String configFile = "data/test/weightedDistances.config",
-				dataFile = "data/test/weightedDistances.in";
+		String configFile = "data/test/HexagonalWeightedGridTest/weightedDistances.config",
+				dataFile = "data/test/HexagonalWeightedGridTest/weightedDistances.in";
 		KeyFrecuencyGraph frecuencies = new KeyFrecuencyGraph(configFile, dataFile);
 		
 		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(1, frecuencies);

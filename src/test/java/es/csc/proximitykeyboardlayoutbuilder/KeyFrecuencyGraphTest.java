@@ -20,7 +20,9 @@ public class KeyFrecuencyGraphTest {
 	
 	@Test
 	public void config() throws IOException {
-		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/empty.in");
+		String keysFile = "data/test/KeyFrecuencyGraphTest/test.config";
+		String sourceFile = "data/test/KeyFrecuencyGraphTest/empty.in";
+		KeyFrecuencyGraph graph = new KeyFrecuencyGraph(keysFile, sourceFile);
 		
 		assertEquals(3, graph.size());
 		
@@ -33,7 +35,9 @@ public class KeyFrecuencyGraphTest {
 	
 	@Test
 	public void singleLineSorce() throws IOException {
-		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/singleLine.in");
+		String keysFile = "data/test/KeyFrecuencyGraphTest/test.config";
+		String sourceFile = "data/test/KeyFrecuencyGraphTest/singleLine.in";
+		KeyFrecuencyGraph graph = new KeyFrecuencyGraph(keysFile, sourceFile);
 		
 		List<Key> keys = graph.keys();
 		
@@ -53,7 +57,9 @@ public class KeyFrecuencyGraphTest {
 	
 	@Test
 	public void multipleLinesSource() throws IOException {
-		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/multipleLines.in");
+		String keysFile = "data/test/KeyFrecuencyGraphTest/test.config";
+		String sourceFile = "data/test/KeyFrecuencyGraphTest/multipleLines.in";
+		KeyFrecuencyGraph graph = new KeyFrecuencyGraph(keysFile, sourceFile);
 		
 		List<Key> keys = graph.keys();
 		
@@ -74,7 +80,9 @@ public class KeyFrecuencyGraphTest {
 
 	@Test
 	public void otherCharacters() throws IOException {
-		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/otherCharacters.in");
+		String keysFile = "data/test/KeyFrecuencyGraphTest/test.config";
+		String sourceFile = "data/test/KeyFrecuencyGraphTest/otherCharacters.in";
+		KeyFrecuencyGraph graph = new KeyFrecuencyGraph(keysFile, sourceFile);
 				
 		List<Key> keys = graph.keys();
 		
@@ -94,7 +102,9 @@ public class KeyFrecuencyGraphTest {
 	
 	@Test
 	public void otherCharactersUppercase() throws IOException {
-		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/otherCharactersUppercase.in");
+		String keysFile = "data/test/KeyFrecuencyGraphTest/test.config";
+		String sourceFile = "data/test/KeyFrecuencyGraphTest/otherCharactersUppercase.in";
+		KeyFrecuencyGraph graph = new KeyFrecuencyGraph(keysFile, sourceFile);
 				
 		List<Key> keys = graph.keys();
 		
@@ -114,7 +124,9 @@ public class KeyFrecuencyGraphTest {
 	
 	@Test
 	public void keysSortedByFrecuency() throws IOException {
-		KeyFrecuencyGraph graph = new KeyFrecuencyGraph("data/test/test.config", "data/test/keysSortedByFrecuency.in");
+		String keysFile = "data/test/KeyFrecuencyGraphTest/test.config";
+		String sourceFile = "data/test/KeyFrecuencyGraphTest/keysSortedByFrecuency.in";
+		KeyFrecuencyGraph graph = new KeyFrecuencyGraph(keysFile, sourceFile);
 				
 		List<Key> keys = graph.keys();
 		

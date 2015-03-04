@@ -202,7 +202,7 @@ public class HexagonalGridTest {
 		for (int i = 0; i < length; ++i) {
 			Integer number;
 			do {
-				number = random.nextInt(ceiling + 1) + floor;
+				number = random.nextInt(ceiling) + floor;
 			} while( numbers.contains(number) ) ;
 				
 			numbers.add(number);
