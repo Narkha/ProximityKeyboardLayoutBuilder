@@ -109,7 +109,12 @@ public class KeyFrecuencyGraph {
 		int index1 = keysIndex.get(key1),
 				index2 = keysIndex.get(key2);
 				
-		++frecuencies[index1][index2];
+		if (index1 < index2) {
+			++frecuencies[index1][index2];
+		}
+		else {
+			++frecuencies[index2][index1];
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -136,11 +141,11 @@ public class KeyFrecuencyGraph {
 		int index1 = keysIndex.get(key1),
 				index2 = keysIndex.get(key2);
 
-		if (index1 == index2) {
+		if (index1 < index2) {
 			return frecuencies[index1][index2];
 		}
 		else {
-			return frecuencies[index1][index2] + frecuencies[index2][index1];
+			return frecuencies[index2][index1];
 		}
 	}
 

@@ -29,4 +29,9 @@ public class Key {
 		return this.getClass() == other.getClass()
 				&& this.characters.equals(((Key) other).characters);
 	}
+	
+	@Override
+	public String toString() {
+		return characters;
+	}
 }

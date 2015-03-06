@@ -123,5 +123,4 @@ public class HexagonalProximityBuilderTest {
 		
 		return false;
 	}
-
 }

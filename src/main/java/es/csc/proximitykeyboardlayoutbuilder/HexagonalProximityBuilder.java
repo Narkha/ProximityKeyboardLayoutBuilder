@@ -19,7 +19,7 @@ public class HexagonalProximityBuilder {
 		
 		placeMostUsedKey(keysByWeight, grid);		
 		
-		return plateOtherKeys(keysByWeight, grid);
+		return placeOtherKeys(keysByWeight, grid);
 	}
 
 	private static void placeMostUsedKey(List<Key> keysByWeight,
@@ -28,7 +28,7 @@ public class HexagonalProximityBuilder {
 	}
 	
 
-	private static HexagonalWeightedGrid plateOtherKeys(List<Key> keysByWeight,
+	private static HexagonalWeightedGrid placeOtherKeys(List<Key> keysByWeight,
 														HexagonalWeightedGrid grid) {
 		int analyzed = 1;				
 		while( analyzed < keysByWeight.size() ) {						

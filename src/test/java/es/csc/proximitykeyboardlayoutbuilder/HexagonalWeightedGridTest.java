@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class HexgonalWeightedGridTest {
+public class HexagonalWeightedGridTest {
 
 	@Test
 	public void weightedDistances() throws IOException {
