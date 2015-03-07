@@ -52,4 +52,9 @@ public class Node implements Cloneable {
 			return null;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return center + " " + (isEmpty() ? "NULL" : content);
+	}
 }

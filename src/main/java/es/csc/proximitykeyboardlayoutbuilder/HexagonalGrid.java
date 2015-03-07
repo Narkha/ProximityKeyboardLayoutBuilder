@@ -10,7 +10,9 @@
 package es.csc.proximitykeyboardlayoutbuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HexagonalGrid implements Cloneable {
 	public static final double INNER_RADIUS = 1.0;
@@ -30,6 +32,9 @@ public class HexagonalGrid implements Cloneable {
 	private ArrayList<Node> nodes;
 	private ArrayList<ArrayList<Node>> nodesByRadius;
 	
+	private Map<Node, Integer> nodesIndex;
+	private double[][] distancesCache;
+	
 	/***
 	 *                                              /\
 	 * Create a map of vertical regular hexagons ( |  | ) 
@@ -41,6 +46,7 @@ public class HexagonalGrid implements Cloneable {
 	public HexagonalGrid(int radius) {
 		nodes = new ArrayList<Node>();
 		nodesByRadius = new ArrayList<ArrayList<Node>>();
+		nodesIndex = new HashMap<Node, Integer>();
 						
 		for (int r = 0; r <= radius; ++r) {
 			addRadius(r);
@@ -49,8 +55,11 @@ public class HexagonalGrid implements Cloneable {
 	}
 	private void addRadius(int r) {
 		ArrayList<Node> newNodes= createNodesInRadius(r);
+						
 		nodes.addAll(newNodes);
 		nodesByRadius.add(newNodes);
+		
+		updateCache();
 	}
 
 	private ArrayList<Node> createNodesInRadius(int radius) {
@@ -81,23 +90,54 @@ public class HexagonalGrid implements Cloneable {
 		return listNodes;
 	}
 	
+	private void updateCache() {
+		updateIndexesCache();		
+		updateDistancesCache();
+	}
+	
+	private void updateIndexesCache() {
+		int indexSize = nodesIndex.size();
+		int newNodes = nodes.size() - indexSize;
+		
+		for (int i = 0; i < newNodes; ++i) {
+			nodesIndex.put( nodes.get(indexSize + i), indexSize + i );
+		}
+	}
+	
+	private void updateDistancesCache() {
+		double[][] update = new double[ size() ][ size() ];
+		
+		for (int i = 0; i < size(); ++i) {
+			for (int j = 0; j < size(); ++j) {
+				update[i][j] = nodes.get(i).distance( nodes.get(j) );
+			}
+		}
+		
+		distancesCache = update;
+	}
+	
 	@Override
 	public Object clone() {
 		try {
-			HexagonalGrid clone = (HexagonalGrid) super.clone();
+			HexagonalGrid clone = (HexagonalGrid) super.clone();			
 			
-			clone.nodes = new ArrayList<Node>();
-			clone.nodesByRadius = new ArrayList<ArrayList<Node>>();
-			for(List<Node> list: this.nodesByRadius) {
-				ArrayList<Node> listClone = deepCopy(list);
-				clone.nodes.addAll( listClone );
-				clone.nodesByRadius.add( listClone );
-			}
+			cloneNodes(clone);			
+			cloneIndexesCache(clone);
 			
 			return clone;
 			
 		} catch (CloneNotSupportedException e) {
 			return null;
+		}
+	}
+	
+	private void cloneNodes(HexagonalGrid clone) {
+		clone.nodes = new ArrayList<Node>();
+		clone.nodesByRadius = new ArrayList<ArrayList<Node>>();
+		for(List<Node> list: this.nodesByRadius) {
+			ArrayList<Node> listClone = deepCopy(list);
+			clone.nodes.addAll( listClone );
+			clone.nodesByRadius.add( listClone );
 		}
 	}
 	
@@ -109,6 +149,13 @@ public class HexagonalGrid implements Cloneable {
 		}
 		
 		return copy;
+	}
+	
+	private void cloneIndexesCache(HexagonalGrid clone) {
+		clone.nodesIndex = new HashMap<Node, Integer>();
+		for(int i = 0, n = clone.size(); i < n; ++i) {
+			clone.nodesIndex.put( clone.nodes.get(i), i );
+		}
 	}
 	
 	public void expand() {
@@ -172,8 +219,8 @@ public class HexagonalGrid implements Cloneable {
 		return totalDistance;
 	}
 
-	protected double distance(Node node, Node other) {
-		return node.distance(other);
+	protected double distance(Node node1, Node node2) {
+		return distancesCache[ nodesIndex.get(node1) ][ nodesIndex.get(node2) ];
 	}
 
 	@SuppressWarnings("unchecked")
