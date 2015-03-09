@@ -80,7 +80,7 @@ public class HexagonalProximityBuilder {
 		
 		placeFirstKeyOuterRadius(keys, emptyGrid);
 		
-		GridDistance winer = minimieDistance(emptyGrid, innerDistances, keys, 1);
+		GridDistance winer = minimizeDistance(emptyGrid, innerDistances, keys, 1);
 		
 		copyOuterNodes(winer.grid, grid);
 		
@@ -117,19 +117,20 @@ public class HexagonalProximityBuilder {
 		outerNodes.get(0).setContent( keys.get(0) );
 	}
 
-	private static GridDistance minimieDistance(HexagonalWeightedGrid grid,
+	private static GridDistance minimizeDistance(HexagonalWeightedGrid grid,
 														Map<Key, Double>[] innerDistances, 
 														List<Key> keys,
 														int keyIndex) {		
 		if (keyIndex == keys.size()) {
-			return minDistanceinRotation((HexagonalWeightedGrid) grid.clone(), innerDistances);
+			return minDistanceInRotation((HexagonalWeightedGrid) grid.clone(), innerDistances);
 		}
 		else {
 			return placeNextKey(grid, innerDistances, keys, keyIndex);
 		}		
 	}
 
-	private static GridDistance minDistanceinRotation(HexagonalWeightedGrid grid, Map<Key, Double>[] innerDistances) {
+	private static GridDistance minDistanceInRotation(HexagonalWeightedGrid grid, 
+														Map<Key, Double>[] innerDistances) {
 		double outerDistance = grid.totalDistance();
 		
 		HexagonalWeightedGrid winer = (HexagonalWeightedGrid) grid.clone();
@@ -149,7 +150,8 @@ public class HexagonalProximityBuilder {
 		return new GridDistance(winer, winerDistance);
 	}
 
-	private static double innerDistanceRotation(HexagonalWeightedGrid grid, Map<Key, Double>[] innerDistances) {
+	private static double innerDistanceRotation(HexagonalWeightedGrid grid, 
+													Map<Key, Double>[] innerDistances) {
 		double distance = 0;
 				
 		List<Node> outerNodes = grid.nodesInRadius( grid.radius() );
@@ -174,8 +176,9 @@ public class HexagonalProximityBuilder {
 		}
 	}
 	
-	private static GridDistance placeNextKey(
-			HexagonalWeightedGrid grid, Map<Key, Double>[] innerDistances, List<Key> keys, int nextKey) {		
+	private static GridDistance placeNextKey(HexagonalWeightedGrid grid, 
+												Map<Key, Double>[] innerDistances, 
+												List<Key> keys, int nextKey) {		
 		GridDistance winer = null;
 		
 		List<Node> nodes = grid.nodesInRadius( grid.radius() );
@@ -183,7 +186,7 @@ public class HexagonalProximityBuilder {
 			if (node.isEmpty()) {
 				node.setContent( keys.get(nextKey) );
 				
-				GridDistance candidate = minimieDistance(grid, innerDistances, keys, nextKey + 1);
+				GridDistance candidate = minimizeDistance(grid, innerDistances, keys, nextKey + 1);
 
 				if (winer == null || candidate.distance < winer.distance) {
 					winer = candidate;

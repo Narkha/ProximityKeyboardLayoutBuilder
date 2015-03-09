@@ -122,5 +122,42 @@ public class HexagonalProximityBuilderTest {
 		}
 		
 		return false;
+	} 
+	
+	@Test
+	public void nineKeysSimple() throws IOException {
+		String keysFile = "data/test/HexagonalProximityBuilderTest/nineKeys.config",
+				dataFile = "data/test/HexagonalProximityBuilderTest/nineKeysSimple.in";
+		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
+		
+		HexagonalWeightedGrid grid = HexagonalProximityBuilder.build(weights);
+		
+		HexagonalWeightedGrid expected = nineKeysSimpleExpected(weights);
+		
+		assertEquals(expected.totalDistance(), grid.totalDistance(), 0.000001);		
+		
+		assertEquals("some keys are repeated", weights.size(), countFullNodes(grid));
+		
+		for(Key key : weights.keys()) {
+			assertTrue( contains(grid, key) );
+		}
+	}
+
+	private HexagonalWeightedGrid nineKeysSimpleExpected(KeyFrecuencyGraph weights) {
+		
+		HexagonalWeightedGrid expected = new HexagonalWeightedGrid(2, weights);
+		
+		List<Node> expectedNodes = expected.nodes();		
+		expectedNodes.get(0).setContent( weights.keys().get(0) );
+		expectedNodes.get(1).setContent( weights.keys().get(3) );
+		expectedNodes.get(2).setContent( weights.keys().get(5) );
+		expectedNodes.get(3).setContent( weights.keys().get(7) );
+		expectedNodes.get(4).setContent( weights.keys().get(1) );
+		expectedNodes.get(5).setContent( weights.keys().get(2) );
+		expectedNodes.get(6).setContent( weights.keys().get(4) );
+		expectedNodes.get(9).setContent( weights.keys().get(6) );
+		expectedNodes.get(15).setContent( weights.keys().get(8) );
+		
+		return expected;
 	}
 }
