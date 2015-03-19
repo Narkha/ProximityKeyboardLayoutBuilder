@@ -30,4 +30,8 @@ public class HexagonalWeightedGrid extends HexagonalGrid
 		return node1.distance(node2) 
 					* weights.getFrecuency(node1.getContent(), node2.getContent());
 	}
+
+	public KeyFrecuencyGraph getWeights() {
+		return weights;
+	}
 }

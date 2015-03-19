@@ -19,14 +19,8 @@ import es.csc.proximitykeyboardlayoutbuilder.Key;
 import es.csc.proximitykeyboardlayoutbuilder.KeyFrecuencyGraph;
 import es.csc.proximitykeyboardlayoutbuilder.Node;
 
-public class HexagonalProximityBuilder {
-	private static KeyFrecuencyGraph weights;
-
-	static private GridCache cache;
-	
+public class HexagonalProximityBuilder {	
 	static public HexagonalWeightedGrid build(KeyFrecuencyGraph weights) {			
-		HexagonalProximityBuilder.weights = weights;
-		
 		List<Key> keysByWeight = weights.keysSortedByFrecuency();
 		
 		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(0, weights);
@@ -71,16 +65,25 @@ public class HexagonalProximityBuilder {
 
 	private static HexagonalWeightedGrid minimizeDistance(HexagonalWeightedGrid grid, 
 														List<Key> keys) {		
-		cache = new GridCache(grid.radius(), weights);
 		Map<Key, Double>[] innerDistances = calculateInnerDistances(grid, keys);				
 				
-		HexagonalWeightedGrid emptyGrid = new HexagonalWeightedGrid(grid.radius(), weights);
+		HexagonalWeightedGrid outerKeysGrid = new HexagonalWeightedGrid(grid.radius(), 
+																	grid.getWeights());
+								
+		placeFirstKeyOuterRadius(outerKeysGrid, keys);
 		
-		placeFirstKeyOuterRadius(emptyGrid, keys);
+		PairGridDistance winer = null;	
 		
-		PairGridDistance winer = minimizeDistance(emptyGrid, innerDistances, keys, 1);
-		
-		copyOuterNodes(winer.grid, grid);
+		try {
+			PlaceOuterKeysTask task = new PlaceOuterKeysTask(outerKeysGrid, innerDistances, 
+																keys, 1);
+			winer = task.call();				
+		} 
+		catch (Exception e) {
+			return null;
+		}	
+				
+		copyOuterKeys(winer.grid, grid);
 		
 		return grid;
 	}
@@ -108,106 +111,14 @@ public class HexagonalProximityBuilder {
 		
 		return innerDistances;
 	}
-
+	
 	private static void placeFirstKeyOuterRadius(HexagonalWeightedGrid emptyGrid,
 													List<Key> keys) {
 		List<Node> outerNodes = emptyGrid.nodesInRadius( emptyGrid.radius() );
 		outerNodes.get(0).setContent( keys.get(0) );
 	}
-
-	private static PairGridDistance minimizeDistance(HexagonalWeightedGrid grid,
-														Map<Key, Double>[] innerDistances, 
-														List<Key> keys,
-														int keyIndex) {		
-		if (keyIndex == keys.size()) {
-			return minDistanceInRotation(grid, innerDistances);
-		}
-		else {
-			return placeNextKey(grid, innerDistances, keys, keyIndex);
-		}		
-	}
-
-	private static PairGridDistance minDistanceInRotation(HexagonalWeightedGrid grid, 
-														Map<Key, Double>[] innerDistances) {
-		double outerDistance = grid.totalDistance();
-		
-		HexagonalWeightedGrid winer = cache.get();
-		winer.copyContent(grid);
-		double winerDistance = innerDistanceRotation(grid, innerDistances) + outerDistance;
-		
-		List<Node> nodes = grid.nodesInRadius( grid.radius() );		
-		for (int i = 1, n = nodes.size(); i < n; ++i) {			
-			rotateContent(nodes);		
-			
-			double candidateDistance = innerDistanceRotation(grid, innerDistances) + outerDistance;
-			if (candidateDistance < winerDistance) {				
-				winer.copyContent(grid);
-				winerDistance = candidateDistance;
-			}
-		}
-		
-		rotateContent(nodes);
-		
-		return new PairGridDistance(winer, winerDistance);
-	}
-
-	private static double innerDistanceRotation(HexagonalWeightedGrid grid, 
-													Map<Key, Double>[] innerDistances) {
-		double distance = 0;
-				
-		List<Node> outerNodes = grid.nodesInRadius( grid.radius() );
-		for(int i = 0, n = outerNodes.size(); i < n; ++i)  {
-			Node node = outerNodes.get(i);
-			
-			if (!node.isEmpty()) {
-				distance += innerDistances[i].get( node.getContent() );
-			}
-		}
-		
-		return distance;		
-	}
-
-	private static void rotateContent(List<Node> nodes) {
-		for(int j = 1, n = nodes.size(); j < n; ++j) {
-			Key content1 = nodes.get(j-1).getContent(),
-					content2 = nodes.get(j).getContent();	
-			
-			nodes.get(j - 1).setContent(content2);
-			nodes.get(j).setContent(content1);
-		}
-	}
 	
-	private static PairGridDistance placeNextKey(HexagonalWeightedGrid grid, 
-												Map<Key, Double>[] innerDistances, 
-												List<Key> keys, int nextKey) {		
-		PairGridDistance winer = null;
-		
-		List<Node> nodes = grid.nodesInRadius( grid.radius() );
-		for(Node node : nodes) {
-			if (node.isEmpty()) {
-				node.setContent( keys.get(nextKey) );
-				
-				PairGridDistance candidate = minimizeDistance(grid, innerDistances, keys, nextKey + 1);
-
-				if (winer == null) {
-					winer = candidate;
-				}
-				else if (candidate.distance < winer.distance) {
-					cache.release(winer.grid);
-					winer = candidate;
-				}
-				else {
-					cache.release(candidate.grid);
-				}
-				
-				node.resetContent();
-			}
-		}
-		
-		return winer;
-	}
-	
-	private static void copyOuterNodes(HexagonalWeightedGrid origin,
+	private static void copyOuterKeys(HexagonalWeightedGrid origin,
 			HexagonalWeightedGrid destiny) {
 
 		Iterator<Node> oIt = origin.nodesInRadius( origin.radius() ).iterator();
