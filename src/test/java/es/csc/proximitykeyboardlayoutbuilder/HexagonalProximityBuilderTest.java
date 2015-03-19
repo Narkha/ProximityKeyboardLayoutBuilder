@@ -21,7 +21,7 @@ import es.csc.proximitykeyboardlayoutbuilder.proximitybuilder.HexagonalProximity
 public class HexagonalProximityBuilderTest {
 
 	@Test
-	public void ThreeKeys() throws IOException {
+	public void ThreeKeys() throws IOException, InterruptedException {
 		String keysFile = "data/test/HexagonalProximityBuilderTest/threeKeys.config",
 				dataFile = "data/test/HexagonalProximityBuilderTest/threeKeys.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
@@ -39,7 +39,7 @@ public class HexagonalProximityBuilderTest {
 	}
 	
 	@Test
-	public void sevenKeysSimple() throws IOException {
+	public void sevenKeysSimple() throws IOException, InterruptedException {
 		String keysFile = "data/test/HexagonalProximityBuilderTest/sevenKeys.config",
 				dataFile = "data/test/HexagonalProximityBuilderTest/sevenKeysSimple.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
@@ -72,7 +72,7 @@ public class HexagonalProximityBuilderTest {
 	}
 	
 	@Test
-	public void sevenKeysComplex() throws IOException {
+	public void sevenKeysComplex() throws IOException, InterruptedException {
 		String keysFile = "data/test/HexagonalProximityBuilderTest/sevenKeys.config",
 				dataFile = "data/test/HexagonalProximityBuilderTest/sevenKeysComplex.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
@@ -127,7 +127,7 @@ public class HexagonalProximityBuilderTest {
 	} 
 	
 	@Test
-	public void nineKeysSimple() throws IOException {
+	public void nineKeysSimple() throws IOException, InterruptedException {
 		String keysFile = "data/test/HexagonalProximityBuilderTest/nineKeys.config",
 				dataFile = "data/test/HexagonalProximityBuilderTest/nineKeysSimple.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);

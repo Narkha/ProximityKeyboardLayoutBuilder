@@ -9,10 +9,18 @@
 
 package es.csc.proximitykeyboardlayoutbuilder.proximitybuilder;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import es.csc.proximitykeyboardlayoutbuilder.HexagonalWeightedGrid;
 import es.csc.proximitykeyboardlayoutbuilder.Key;
@@ -20,7 +28,7 @@ import es.csc.proximitykeyboardlayoutbuilder.KeyFrecuencyGraph;
 import es.csc.proximitykeyboardlayoutbuilder.Node;
 
 public class HexagonalProximityBuilder {	
-	static public HexagonalWeightedGrid build(KeyFrecuencyGraph weights) {			
+	static public HexagonalWeightedGrid build(KeyFrecuencyGraph weights) throws InterruptedException {			
 		List<Key> keysByWeight = weights.keysSortedByFrecuency();
 		
 		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(0, weights);
@@ -38,7 +46,7 @@ public class HexagonalProximityBuilder {
 	}
 
 	private static HexagonalWeightedGrid placeOtherKeys(HexagonalWeightedGrid grid,
-														List<Key> keys) {
+														List<Key> keys) throws InterruptedException {
 		int analyzed = 1;				
 		while( analyzed < keys.size() ) {						
 			grid.expand();
@@ -64,7 +72,7 @@ public class HexagonalProximityBuilder {
 	}
 
 	private static HexagonalWeightedGrid minimizeDistance(HexagonalWeightedGrid grid, 
-														List<Key> keys) {		
+														List<Key> keys) throws InterruptedException {		
 		Map<Key, Double>[] innerDistances = calculateInnerDistances(grid, keys);				
 				
 		HexagonalWeightedGrid outerKeysGrid = new HexagonalWeightedGrid(grid.radius(), 
@@ -74,10 +82,15 @@ public class HexagonalProximityBuilder {
 		
 		PairGridDistance winer = null;	
 
-		PlaceOuterKeysTask task = new PlaceOuterKeysTask(outerKeysGrid, innerDistances, 
-																keys, 1);
-		winer = task.call();
-				
+		if (keys.size() == 1) {
+			PlaceOuterKeysTask task = new PlaceOuterKeysTask(outerKeysGrid, innerDistances, 
+																	keys, 1);
+			winer = task.call();
+		}
+		else {
+			winer = parallelizePlaceKeysTasks(outerKeysGrid, innerDistances, keys);
+		}
+	
 		copyOuterKeys(winer.grid, grid);
 		
 		return grid;
@@ -111,6 +124,78 @@ public class HexagonalProximityBuilder {
 													List<Key> keys) {
 		List<Node> outerNodes = emptyGrid.nodesInRadius( emptyGrid.radius() );
 		outerNodes.get(0).setContent( keys.get(0) );
+	}
+	
+
+	private static PairGridDistance parallelizePlaceKeysTasks(
+											HexagonalWeightedGrid grid,
+											Map<Key, Double>[] innerDistances, 
+											List<Key> keys) throws InterruptedException {	
+		
+		
+		
+		ExecutorService executor = Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors() );
+				
+		List<Future<PairGridDistance>> results = submitTasks(executor, grid,
+																innerDistances, keys);
+		
+		executor.shutdown();
+		executor.awaitTermination(10, TimeUnit.DAYS);				
+		
+		return findMin(results);
+		
+	}
+
+	private static List<Future<PairGridDistance>> submitTasks(
+			ExecutorService executor, HexagonalWeightedGrid grid,
+			Map<Key, Double>[] innerDistances, List<Key> keys) {
+		List<Node> nodes = grid.nodesInRadius( grid.radius() );
+		List< Future<PairGridDistance> > results = new ArrayList< Future<PairGridDistance> >();
+		
+		for (int i = 1, n = nodes.size(); i < n; ++i) {
+			Node node = nodes.get(i);
+			
+			node.setContent( keys.get(1) );
+			
+			PlaceOuterKeysTask task = new PlaceOuterKeysTask((HexagonalWeightedGrid) grid.clone(), 
+																innerDistances, keys, 2);
+			Future<PairGridDistance> future = executor.submit(task);
+			results.add(future);
+			
+			node.resetContent();
+		}
+		return results;
+	}
+
+	private static PairGridDistance findMin(List<Future<PairGridDistance>> results) {
+		class FutureComparator implements java.util.Comparator< Future<PairGridDistance >> {
+
+			public int compare(Future<PairGridDistance> future1,
+								Future<PairGridDistance> future2) {
+				try {
+					return (int) (future1.get().distance - future2.get().distance);
+				} 
+				catch (InterruptedException e) {
+					return 0;
+				} 
+				catch (ExecutionException e) {
+					return 0;
+				}
+			}
+			
+		}
+		
+		int index = results.indexOf( Collections.min(results, new FutureComparator()) );
+		
+		try {
+			return results.get(index).get();
+		} 
+		catch (InterruptedException e) {
+			return null;
+		} 
+		catch (ExecutionException e) {
+			return null;
+		}
 	}
 	
 	private static void copyOuterKeys(HexagonalWeightedGrid origin,
