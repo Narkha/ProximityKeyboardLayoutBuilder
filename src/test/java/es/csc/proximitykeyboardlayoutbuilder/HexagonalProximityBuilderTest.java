@@ -16,6 +16,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import es.csc.proximitykeyboardlayoutbuilder.proximitybuilder.HexagonalProximityBuilder;
+
 public class HexagonalProximityBuilderTest {
 
 	@Test
