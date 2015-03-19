@@ -29,13 +29,13 @@ public class HexagonalProximityBuilder {
 		
 		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(0, weights);
 		
-		placeMostUsedKey(keysByWeight, grid);		
+		placeMostUsedKey(grid, keysByWeight);		
 		
 		return placeOtherKeys(grid, keysByWeight);
 	}
 
-	private static void placeMostUsedKey(List<Key> keys,
-										HexagonalWeightedGrid grid) {
+	private static void placeMostUsedKey(HexagonalWeightedGrid grid,
+										List<Key> keys) {
 		Key mostUsedKey = keys.get(0);
 		Node center = grid.nodesInRadius(0).get(0);
 		center.setContent(mostUsedKey );
@@ -47,7 +47,7 @@ public class HexagonalProximityBuilder {
 		while( analyzed < keys.size() ) {						
 			grid.expand();
 			
-			List<Key> keysToPlace = keysToPlace(keys, grid, analyzed);			
+			List<Key> keysToPlace = keysToPlace(grid, keys, analyzed);			
 			
 			grid = minimizeDistance(grid, keysToPlace);
 			
@@ -56,8 +56,8 @@ public class HexagonalProximityBuilder {
 		return grid;
 	}
 
-	private static List<Key> keysToPlace(List<Key> keys, 
-										HexagonalWeightedGrid grid, 
+	private static List<Key> keysToPlace(HexagonalWeightedGrid grid, 
+										List<Key> keys, 
 										int analyzed) {
 		
 		int remainingKeys = keys.size() - analyzed;
@@ -73,7 +73,7 @@ public class HexagonalProximityBuilder {
 				
 		HexagonalWeightedGrid emptyGrid = new HexagonalWeightedGrid(grid.radius(), weights);
 		
-		placeFirstKeyOuterRadius(keys, emptyGrid);
+		placeFirstKeyOuterRadius(emptyGrid, keys);
 		
 		PairGridDistance winer = minimizeDistance(emptyGrid, innerDistances, keys, 1);
 		
@@ -106,8 +106,8 @@ public class HexagonalProximityBuilder {
 		return innerDistances;
 	}
 
-	private static void placeFirstKeyOuterRadius(List<Key> keys,
-													HexagonalWeightedGrid emptyGrid) {
+	private static void placeFirstKeyOuterRadius(HexagonalWeightedGrid emptyGrid,
+													List<Key> keys) {
 		List<Node> outerNodes = emptyGrid.nodesInRadius( emptyGrid.radius() );
 		outerNodes.get(0).setContent( keys.get(0) );
 	}
