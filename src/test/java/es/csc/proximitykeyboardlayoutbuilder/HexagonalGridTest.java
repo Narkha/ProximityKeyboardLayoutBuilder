@@ -180,6 +180,20 @@ public class HexagonalGridTest {
 		}
 		
 	}
+	
+	@Test
+	public void copyContent() {
+		HexagonalGrid grid = generateRandomGrid(3);
+		HexagonalGrid other = new HexagonalGrid(3);
+		
+		other.copyContent(grid);
+		
+		for (int i = 0, n = grid.size(); i < n; ++i) {
+			assertNotEquals(grid.nodes().get(i), other.nodes().get(i));
+			assertEquals(grid.nodes().get(i).getContent(), other.nodes().get(i).getContent());
+		}
+	
+	}
 
 	private HexagonalGrid generateRandomGrid(int radius) {
 		HexagonalGrid grid = new HexagonalGrid(radius);

@@ -227,4 +227,17 @@ public class HexagonalGrid implements Cloneable {
 	public List<Node> nodes() {
 		return (List<Node>) nodes.clone();
 	}
+	
+
+
+	public void copyContent(HexagonalGrid other) throws ArrayIndexOutOfBoundsException {
+		if (this.size() != other.size()) {
+			throw new ArrayIndexOutOfBoundsException("The grids have different size");
+		}
+		
+		for (int i = 0, n = this.size(); i < n; ++i) {
+			Key content = other.nodes().get(i).getContent(); 
+			nodes().get(i).setContent(content);
+		}
+	}
 }

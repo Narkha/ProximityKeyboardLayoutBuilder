@@ -21,6 +21,8 @@ import es.csc.proximitykeyboardlayoutbuilder.Node;
 
 public class HexagonalProximityBuilder {
 	private static KeyFrecuencyGraph weights;
+
+	static private GridCache cache;
 	
 	static public HexagonalWeightedGrid build(KeyFrecuencyGraph weights) {			
 		HexagonalProximityBuilder.weights = weights;
@@ -68,7 +70,8 @@ public class HexagonalProximityBuilder {
 	}
 
 	private static HexagonalWeightedGrid minimizeDistance(HexagonalWeightedGrid grid, 
-														List<Key> keys) {
+														List<Key> keys) {		
+		cache = new GridCache(grid.radius(), weights);
 		Map<Key, Double>[] innerDistances = calculateInnerDistances(grid, keys);				
 				
 		HexagonalWeightedGrid emptyGrid = new HexagonalWeightedGrid(grid.radius(), weights);
@@ -117,7 +120,7 @@ public class HexagonalProximityBuilder {
 														List<Key> keys,
 														int keyIndex) {		
 		if (keyIndex == keys.size()) {
-			return minDistanceInRotation((HexagonalWeightedGrid) grid.clone(), innerDistances);
+			return minDistanceInRotation(grid, innerDistances);
 		}
 		else {
 			return placeNextKey(grid, innerDistances, keys, keyIndex);
@@ -128,19 +131,22 @@ public class HexagonalProximityBuilder {
 														Map<Key, Double>[] innerDistances) {
 		double outerDistance = grid.totalDistance();
 		
-		HexagonalWeightedGrid winer = (HexagonalWeightedGrid) grid.clone();
+		HexagonalWeightedGrid winer = cache.get();
+		winer.copyContent(grid);
 		double winerDistance = innerDistanceRotation(grid, innerDistances) + outerDistance;
 		
 		List<Node> nodes = grid.nodesInRadius( grid.radius() );		
 		for (int i = 1, n = nodes.size(); i < n; ++i) {			
-			ratateContent(nodes);		
+			rotateContent(nodes);		
 			
 			double candidateDistance = innerDistanceRotation(grid, innerDistances) + outerDistance;
 			if (candidateDistance < winerDistance) {				
-				winer = (HexagonalWeightedGrid) grid.clone();
+				winer.copyContent(grid);
 				winerDistance = candidateDistance;
 			}
 		}
+		
+		rotateContent(nodes);
 		
 		return new PairGridDistance(winer, winerDistance);
 	}
@@ -161,7 +167,7 @@ public class HexagonalProximityBuilder {
 		return distance;		
 	}
 
-	private static void ratateContent(List<Node> nodes) {
+	private static void rotateContent(List<Node> nodes) {
 		for(int j = 1, n = nodes.size(); j < n; ++j) {
 			Key content1 = nodes.get(j-1).getContent(),
 					content2 = nodes.get(j).getContent();	
@@ -183,8 +189,15 @@ public class HexagonalProximityBuilder {
 				
 				PairGridDistance candidate = minimizeDistance(grid, innerDistances, keys, nextKey + 1);
 
-				if (winer == null || candidate.distance < winer.distance) {
+				if (winer == null) {
 					winer = candidate;
+				}
+				else if (candidate.distance < winer.distance) {
+					cache.release(winer.grid);
+					winer = candidate;
+				}
+				else {
+					cache.release(candidate.grid);
 				}
 				
 				node.resetContent();
