@@ -73,15 +73,10 @@ public class HexagonalProximityBuilder {
 		placeFirstKeyOuterRadius(outerKeysGrid, keys);
 		
 		PairGridDistance winer = null;	
-		
-		try {
-			PlaceOuterKeysTask task = new PlaceOuterKeysTask(outerKeysGrid, innerDistances, 
+
+		PlaceOuterKeysTask task = new PlaceOuterKeysTask(outerKeysGrid, innerDistances, 
 																keys, 1);
-			winer = task.call();				
-		} 
-		catch (Exception e) {
-			return null;
-		}	
+		winer = task.call();
 				
 		copyOuterKeys(winer.grid, grid);
 		
