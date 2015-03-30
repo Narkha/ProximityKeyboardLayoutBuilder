@@ -16,17 +16,17 @@ import java.util.List;
 
 import org.junit.Test;
 
-import es.csc.proximitykeyboardlayoutbuilder.proximitybuilder.HexagonalProximityBuilder;
+import es.csc.proximitykeyboardlayoutbuilder.proximitybuilder.RingProximityBuilder;
 
-public class HexagonalProximityBuilderTest {
+public class RingProximityBuilderTest {
 
 	@Test
 	public void ThreeKeys() throws IOException, InterruptedException {
-		String keysFile = "data/test/HexagonalProximityBuilderTest/threeKeys.config",
-				dataFile = "data/test/HexagonalProximityBuilderTest/threeKeys.in";
+		String keysFile = "data/test/RingProximityBuilderTest/threeKeys.config",
+				dataFile = "data/test/RingProximityBuilderTest/threeKeys.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		
-		HexagonalWeightedGrid grid = HexagonalProximityBuilder.build(weights);
+		HexagonalWeightedGrid grid = RingProximityBuilder.build(weights);
 		
 		double expectedDistance = 2 * HexagonalWeightedGrid.INNER_RADIUS * 17; 
 		assertEquals(expectedDistance, grid.totalDistance(), 0.000001);
@@ -40,11 +40,11 @@ public class HexagonalProximityBuilderTest {
 	
 	@Test
 	public void sevenKeysSimple() throws IOException, InterruptedException {
-		String keysFile = "data/test/HexagonalProximityBuilderTest/sevenKeys.config",
-				dataFile = "data/test/HexagonalProximityBuilderTest/sevenKeysSimple.in";
+		String keysFile = "data/test/RingProximityBuilderTest/sevenKeys.config",
+				dataFile = "data/test/RingProximityBuilderTest/sevenKeysSimple.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		
-		HexagonalWeightedGrid grid = HexagonalProximityBuilder.build(weights);
+		HexagonalWeightedGrid grid = RingProximityBuilder.build(weights);
 		
 		HexagonalWeightedGrid expected = sevenKeysSimpleExpected(weights);
 		
@@ -73,11 +73,11 @@ public class HexagonalProximityBuilderTest {
 	
 	@Test
 	public void sevenKeysComplex() throws IOException, InterruptedException {
-		String keysFile = "data/test/HexagonalProximityBuilderTest/sevenKeys.config",
-				dataFile = "data/test/HexagonalProximityBuilderTest/sevenKeysComplex.in";
+		String keysFile = "data/test/RingProximityBuilderTest/sevenKeys.config",
+				dataFile = "data/test/RingProximityBuilderTest/sevenKeysComplex.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		
-		HexagonalWeightedGrid grid = HexagonalProximityBuilder.build(weights);
+		HexagonalWeightedGrid grid = RingProximityBuilder.build(weights);
 		
 		HexagonalWeightedGrid expected = sevenKeysComplexExptected(weights);
 		
@@ -128,11 +128,11 @@ public class HexagonalProximityBuilderTest {
 	
 	@Test
 	public void nineKeysSimple() throws IOException, InterruptedException {
-		String keysFile = "data/test/HexagonalProximityBuilderTest/nineKeys.config",
-				dataFile = "data/test/HexagonalProximityBuilderTest/nineKeysSimple.in";
+		String keysFile = "data/test/RingProximityBuilderTest/nineKeys.config",
+				dataFile = "data/test/RingProximityBuilderTest/nineKeysSimple.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		
-		HexagonalWeightedGrid grid = HexagonalProximityBuilder.build(weights);
+		HexagonalWeightedGrid grid = RingProximityBuilder.build(weights);
 		
 		HexagonalWeightedGrid expected = nineKeysSimpleExpected(weights);
 		

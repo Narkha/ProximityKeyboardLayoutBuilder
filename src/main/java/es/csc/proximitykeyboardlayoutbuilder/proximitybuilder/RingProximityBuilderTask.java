@@ -9,14 +9,14 @@ import es.csc.proximitykeyboardlayoutbuilder.Key;
 import es.csc.proximitykeyboardlayoutbuilder.Node;
 
 
-class PlaceOuterKeysTask implements Callable<PairGridDistance> {
+class RingProximityBuilderTask implements Callable<PairGridDistance> {
 	private GridCache cache;
 	private HexagonalWeightedGrid originalGrid;
 	private Map<Key, Double>[] innerDistances;
 	private List<Key> keys;
 	private int firstKeyToPlace;
 	
-	public PlaceOuterKeysTask(HexagonalWeightedGrid grid, 
+	public RingProximityBuilderTask(HexagonalWeightedGrid grid, 
 								Map<Key, Double>[] innerDistances, 
 								List<Key> keys, 
 								int firstKeyToPlace) {		

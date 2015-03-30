@@ -27,7 +27,7 @@ import es.csc.proximitykeyboardlayoutbuilder.Key;
 import es.csc.proximitykeyboardlayoutbuilder.KeyFrecuencyGraph;
 import es.csc.proximitykeyboardlayoutbuilder.Node;
 
-public class HexagonalProximityBuilder {	
+public class RingProximityBuilder {	
 	static public HexagonalWeightedGrid build(KeyFrecuencyGraph weights) throws InterruptedException {			
 		List<Key> keysByWeight = weights.keysSortedByFrecuency();
 		
@@ -83,7 +83,7 @@ public class HexagonalProximityBuilder {
 		PairGridDistance winer = null;	
 
 		if (keys.size() == 1) {
-			PlaceOuterKeysTask task = new PlaceOuterKeysTask(outerKeysGrid, innerDistances, 
+			RingProximityBuilderTask task = new RingProximityBuilderTask(outerKeysGrid, innerDistances, 
 																	keys, 1);
 			winer = task.call();
 		}
@@ -157,7 +157,7 @@ public class HexagonalProximityBuilder {
 			
 			node.setContent( keys.get(1) );
 			
-			PlaceOuterKeysTask task = new PlaceOuterKeysTask((HexagonalWeightedGrid) grid.clone(), 
+			RingProximityBuilderTask task = new RingProximityBuilderTask((HexagonalWeightedGrid) grid.clone(), 
 																innerDistances, keys, 2);
 			Future<PairGridDistance> future = executor.submit(task);
 			results.add(future);
