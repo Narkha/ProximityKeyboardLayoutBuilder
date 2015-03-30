@@ -43,15 +43,14 @@ public class RingProximityBuilder {
 		return placeOtherKeys(grid, keysByWeight);
 	}
 
-	private void placeMostUsedKey(HexagonalWeightedGrid grid,
-										List<Key> keys) {
+	private void placeMostUsedKey(HexagonalWeightedGrid grid, List<Key> keys) {
 		Key mostUsedKey = keys.get(0);
 		Node center = grid.nodesInRadius(0).get(0);
 		center.setContent(mostUsedKey);
 	}
 
-	private HexagonalWeightedGrid placeOtherKeys(HexagonalWeightedGrid grid,
-														List<Key> keys) throws InterruptedException {
+	private HexagonalWeightedGrid placeOtherKeys(HexagonalWeightedGrid grid, List<Key> keys) 
+													throws InterruptedException {
 		int analyzed = 1;				
 		while( analyzed < keys.size() ) {						
 			grid.expand();
@@ -65,9 +64,7 @@ public class RingProximityBuilder {
 		return grid;
 	}
 
-	private List<Key> keysToPlace(HexagonalWeightedGrid grid, 
-										List<Key> keys, 
-										int analyzed) {
+	private List<Key> keysToPlace(HexagonalWeightedGrid grid, List<Key> keys, int analyzed) {
 		
 		int remainingKeys = keys.size() - analyzed;
 		int keysInRadius = grid.nodesInRadius( grid.radius() ).size();
@@ -77,7 +74,8 @@ public class RingProximityBuilder {
 	}
 
 	private HexagonalWeightedGrid minimizeDistance(HexagonalWeightedGrid grid, 
-														List<Key> keys) throws InterruptedException {		
+													List<Key> keys) 
+													throws InterruptedException {		
 		Map<Key, Double>[] innerDistances = calculateInnerDistances(grid, keys);				
 				
 		HexagonalWeightedGrid outerKeysGrid = new HexagonalWeightedGrid(grid.radius(), 
@@ -88,8 +86,9 @@ public class RingProximityBuilder {
 		PairGridDistance winner = null;	
 
 		if (keys.size() == 1) {
-			RingProximityBuilderTask task = new RingProximityBuilderTask(outerKeysGrid, innerDistances, 
-																	keys, 1);
+			RingProximityBuilderTask task = new RingProximityBuilderTask(outerKeysGrid,
+																		innerDistances, 
+																		keys, 1);
 			winner = task.call();
 		}
 		else {
@@ -102,8 +101,7 @@ public class RingProximityBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<Key, Double>[] calculateInnerDistances(
-														HexagonalWeightedGrid grid, 
+	private Map<Key, Double>[] calculateInnerDistances(HexagonalWeightedGrid grid, 
 														List<Key> keys) {
 		List<Node> outerNodes = grid.nodesInRadius( grid.radius() ); 
 		
@@ -132,12 +130,10 @@ public class RingProximityBuilder {
 	}
 	
 
-	private PairGridDistance parallelizePlaceKeysTasks(
-											HexagonalWeightedGrid grid,
-											Map<Key, Double>[] innerDistances, 
-											List<Key> keys) throws InterruptedException {	
-		
-		
+	private PairGridDistance parallelizePlaceKeysTasks(HexagonalWeightedGrid grid,
+														Map<Key, Double>[] innerDistances, 
+														List<Key> keys) 
+														throws InterruptedException {	
 		
 		ExecutorService executor = Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors() );
 				
@@ -151,9 +147,10 @@ public class RingProximityBuilder {
 		
 	}
 
-	private List<Future<PairGridDistance>> submitTasks(
-			ExecutorService executor, HexagonalWeightedGrid grid,
-			Map<Key, Double>[] innerDistances, List<Key> keys) {
+	private List<Future<PairGridDistance>> submitTasks(ExecutorService executor, 
+														HexagonalWeightedGrid grid,
+														Map<Key, Double>[] innerDistances, 
+														List<Key> keys) {
 		List<Node> nodes = grid.nodesInRadius( grid.radius() );
 		List< Future<PairGridDistance> > results = new ArrayList< Future<PairGridDistance> >();
 		
