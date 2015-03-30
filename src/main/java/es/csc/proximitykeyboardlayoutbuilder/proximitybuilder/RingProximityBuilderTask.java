@@ -27,6 +27,10 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 		this.keys = keys;
 		this.firstKeyToPlace = firstKeyToPlace;
 	}
+
+	public PairGridDistance call() {
+		return minimizeOuterNodesDistance(originalGrid, firstKeyToPlace);
+	}
 	
 	private PairGridDistance minimizeOuterNodesDistance(HexagonalWeightedGrid grid,
 														int keyIndex) {		
@@ -41,24 +45,24 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 	private PairGridDistance minDistanceInRotation(HexagonalWeightedGrid grid) {
 		double outerDistance = grid.totalDistance();
 		
-		HexagonalWeightedGrid winer = cache.get();
-		winer.copyContent(grid);
-		double winerDistance = innerDistanceRotation(grid) + outerDistance;
+		HexagonalWeightedGrid winner = cache.get();
+		winner.copyContent(grid);
+		double winnerDistance = innerDistanceRotation(grid) + outerDistance;
 		
 		List<Node> nodes = grid.nodesInRadius( grid.radius() );		
 		for (int i = 1, n = nodes.size(); i < n; ++i) {			
 			rotateContent(nodes);		
 			
 			double candidateDistance = innerDistanceRotation(grid) + outerDistance;
-			if (candidateDistance < winerDistance) {				
-				winer.copyContent(grid);
-				winerDistance = candidateDistance;
+			if (candidateDistance < winnerDistance) {				
+				winner.copyContent(grid);
+				winnerDistance = candidateDistance;
 			}
 		}
 		
 		rotateContent(nodes);
 		
-		return new PairGridDistance(winer, winerDistance);
+		return new PairGridDistance(winner, winnerDistance);
 	}
 
 	private double innerDistanceRotation(HexagonalWeightedGrid grid) {
@@ -87,7 +91,7 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 	}
 	
 	private PairGridDistance placeNextKey(HexagonalWeightedGrid grid, int nextKey) {		
-		PairGridDistance winer = null;
+		PairGridDistance winner = null;
 		
 		List<Node> nodes = grid.nodesInRadius( grid.radius() );
 		for(Node node : nodes) {
@@ -96,12 +100,12 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 				
 				PairGridDistance candidate = minimizeOuterNodesDistance(grid, nextKey + 1);
 
-				if (winer == null) {
-					winer = candidate;
+				if (winner == null) {
+					winner = candidate;
 				}
-				else if (candidate.distance < winer.distance) {
-					cache.release(winer.grid);
-					winer = candidate;
+				else if (candidate.distance < winner.distance) {
+					cache.release(winner.grid);
+					winner = candidate;
 				}
 				else {
 					cache.release(candidate.grid);
@@ -111,10 +115,6 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 			}
 		}
 		
-		return winer;
-	}
-
-	public PairGridDistance call() {
-		return minimizeOuterNodesDistance(originalGrid, firstKeyToPlace);
+		return winner;
 	}
 }

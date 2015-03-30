@@ -26,7 +26,7 @@ public class RingProximityBuilderTest {
 				dataFile = "data/test/RingProximityBuilderTest/threeKeys.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		
-		HexagonalWeightedGrid grid = RingProximityBuilder.build(weights);
+		HexagonalWeightedGrid grid = (new RingProximityBuilder(weights)).build();
 		
 		double expectedDistance = 2 * HexagonalWeightedGrid.INNER_RADIUS * 17; 
 		assertEquals(expectedDistance, grid.totalDistance(), 0.000001);
@@ -37,14 +37,14 @@ public class RingProximityBuilderTest {
 			assertTrue( contains(grid, key) );
 		}
 	}
-	
+
 	@Test
 	public void sevenKeysSimple() throws IOException, InterruptedException {
 		String keysFile = "data/test/RingProximityBuilderTest/sevenKeys.config",
 				dataFile = "data/test/RingProximityBuilderTest/sevenKeysSimple.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		
-		HexagonalWeightedGrid grid = RingProximityBuilder.build(weights);
+		HexagonalWeightedGrid grid = (new RingProximityBuilder(weights)).build();
 		
 		HexagonalWeightedGrid expected = sevenKeysSimpleExpected(weights);
 		
@@ -77,7 +77,7 @@ public class RingProximityBuilderTest {
 				dataFile = "data/test/RingProximityBuilderTest/sevenKeysComplex.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		
-		HexagonalWeightedGrid grid = RingProximityBuilder.build(weights);
+		HexagonalWeightedGrid grid = (new RingProximityBuilder(weights)).build();
 		
 		HexagonalWeightedGrid expected = sevenKeysComplexExptected(weights);
 		
@@ -132,7 +132,7 @@ public class RingProximityBuilderTest {
 				dataFile = "data/test/RingProximityBuilderTest/nineKeysSimple.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		
-		HexagonalWeightedGrid grid = RingProximityBuilder.build(weights);
+		HexagonalWeightedGrid grid = (new RingProximityBuilder(weights)).build();
 		
 		HexagonalWeightedGrid expected = nineKeysSimpleExpected(weights);
 		
