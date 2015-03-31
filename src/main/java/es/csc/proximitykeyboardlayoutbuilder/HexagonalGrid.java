@@ -11,6 +11,7 @@ package es.csc.proximitykeyboardlayoutbuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,11 +22,11 @@ public class HexagonalGrid implements Cloneable {
 	
 	public static final double DIRECTION_SHIFT[][] = { 
 									{2 * INNER_RADIUS, 0},
-									{INNER_RADIUS, -NEIGHBOURS_DIAGONAL_Y},
-									{-INNER_RADIUS, -NEIGHBOURS_DIAGONAL_Y},
-									{-2 * INNER_RADIUS, 0},
+									{INNER_RADIUS, NEIGHBOURS_DIAGONAL_Y},
 									{-INNER_RADIUS, NEIGHBOURS_DIAGONAL_Y},
-									{INNER_RADIUS, NEIGHBOURS_DIAGONAL_Y}
+									{-2 * INNER_RADIUS, 0},
+									{-INNER_RADIUS, -NEIGHBOURS_DIAGONAL_Y},
+									{INNER_RADIUS, -NEIGHBOURS_DIAGONAL_Y}
 								};
 
 	
@@ -71,7 +72,7 @@ public class HexagonalGrid implements Cloneable {
 		}
 		else {
 			double x = - INNER_RADIUS * radius;
-			double y = NEIGHBOURS_DIAGONAL_Y * radius;
+			double y = - NEIGHBOURS_DIAGONAL_Y * radius;
 			
 			for(int i = 0; i < DIRECTION_SHIFT.length; ++i) {
 				double xShift = DIRECTION_SHIFT[i][0];
@@ -228,8 +229,6 @@ public class HexagonalGrid implements Cloneable {
 		return (List<Node>) nodes.clone();
 	}
 	
-
-
 	public void copyContent(HexagonalGrid other) throws ArrayIndexOutOfBoundsException {
 		if (this.size() != other.size()) {
 			throw new ArrayIndexOutOfBoundsException("The grids have different size");
@@ -239,5 +238,82 @@ public class HexagonalGrid implements Cloneable {
 			Key content = other.nodes().get(i).getContent(); 
 			nodes().get(i).setContent(content);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		List<List<Node>> printGrid = buildPrintRepresentation();		
+		return toString(printGrid);
+	}
+	
+
+	private List<List<Node>> buildPrintRepresentation() {
+		List<List<Node>> result = initializeResult();
+		
+		for (int radius = 0, R = radius(); radius <= R; ++radius) {
+			Iterator<Node> nodeIt = nodesInRadius(radius).iterator();			
+			
+			if (radius == 0) {
+				AddNodesRadiusZero(result, radius, nodeIt);
+			}
+			else {
+				AddNodes(result, nodeIt, radius);
+			}
+		}
+		
+		return result;
+	}
+	
+	private List<List<Node>> initializeResult() {
+		int numRows = 2 * radius() + 1;
+		List<List<Node>> result = new ArrayList<List<Node>>(numRows);
+		for (int i = 0; i < numRows; ++i) {
+			result.add( new ArrayList<Node>() ); 
+		}
+		return result;
+	}
+	
+	private void AddNodesRadiusZero(List<List<Node>> result, int radius,
+			Iterator<Node> nodeIt) {
+		int row = radius() - radius;
+		result.get(row).add( nodeIt.next() );
+	}
+	
+
+	private void AddNodes(List<List<Node>> result, Iterator<Node> nodeIt, int radius) {
+		int row = radius() - radius;
+		
+		for(int i = 0; i < DIRECTION_SHIFT.length; ++i) {
+			double xShift = DIRECTION_SHIFT[i][0];
+			double yShift = DIRECTION_SHIFT[i][1];
+			
+			for(int j = 0; j < radius; ++j) {
+				row += (yShift > 0) ? 1 : ((yShift < 0)? -1 : 0); 
+				if (isAdd2End(xShift, yShift)) {
+					result.get(row).add(nodeIt.next());
+				}
+				else {
+					result.get(row).add(0, nodeIt.next());
+				}
+			}
+		}
+	}
+	
+	private boolean isAdd2End(double xShift, double yShift) {
+		return yShift > 0 || (yShift == 0 && xShift > 0);
+	}
+	
+	
+	private String toString(List<List<Node>> printGrid) {
+		StringBuilder result = new StringBuilder( size() * 3);
+		
+		for(List<Node> row: printGrid) {
+			for(Node node: row) {
+				result.append( node.getContent() + " ");
+			}	
+			result.append("\r\n");
+		}
+		
+		return result.toString();
 	}
 }

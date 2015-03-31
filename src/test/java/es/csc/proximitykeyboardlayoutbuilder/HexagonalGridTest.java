@@ -224,4 +224,38 @@ public class HexagonalGridTest {
 		
 		return new ArrayList<Integer>(numbers);		
 	}
+	
+	@Test
+	public void toStringNonEmpyNodes() {
+		HexagonalGrid grid = new HexagonalGrid(2);
+		
+		for (int i = 0, n = grid.size(); i < n; ++i) {
+			grid.nodes().get(i).setContent( new Key( ""+ i) );
+		}
+		
+		String expectedResult = 	"18 7 8 \r\n" +
+								  "17 6 1 9 \r\n" +
+				                 "16 5 0 2 10 \r\n" +
+								  "15 4 3 11 \r\n" +
+				                   "14 13 12 \r\n";
+		
+		assertEquals(expectedResult, grid.toString());
+	}
+	
+	@Test
+	public void toStringEmpyNodes() {
+		HexagonalGrid grid = new HexagonalGrid(2);
+		
+		for (int i = 0; i < 14; ++i) {
+			grid.nodes().get(i).setContent( new Key( ""+ i) );
+		}
+		
+		String expectedResult = 	"null 7 8 \r\n" +
+								  "null 6 1 9 \r\n" +
+				                 "null 5 0 2 10 \r\n" +
+								  "null 4 3 11 \r\n" +
+				                   "null 13 12 \r\n";
+		
+		assertEquals(expectedResult, grid.toString());
+	}
 }
