@@ -31,7 +31,8 @@ public class HexagonalGrid implements Cloneable {
 									{INNER_RADIUS, -NEIGHBOURS_DIAGONAL_Y}
 								};
 
-	
+	private int maxRows;
+	private int currenRows;
 	private ArrayList<Node> nodes;
 	private ArrayList<ArrayList<Node>> nodesByRadius;
 	
@@ -41,12 +42,31 @@ public class HexagonalGrid implements Cloneable {
 	/***
 	 *                                              /\
 	 * Create a map of vertical regular hexagons ( |  | ) 
-	 *                                              \/                                      
+	 *                                              \/    
+	 *                                              
+	 * This constructor it is equivalent to HexagonalGrid(0, radius).
 	 * 
 	 * @param radius: defines the maximum distance in hexagons to any hexagon to the center.
-	 *                radius 0 corresponds to only one hexagon 
-	 */
+	 *                radius 0 corresponds to only one hexagon.
+	 */	
 	public HexagonalGrid(int radius) {
+		this(0, radius);		
+	}
+	
+	/***
+	 *                                              /\
+	 * Create a map of vertical regular hexagons ( |  | ) 
+	 *                                              \/    
+	 *                                              
+	 * @param maxRows: defines the maximun number of rows that a grid can have. This value is
+	 *                 preserved after an expansion.
+	 *                 If it´s smaller or equal than 0 there is no limit. 
+	 * @param radius: defines the maximum distance in hexagons to any hexagon to the center.
+	 *                radius 0 corresponds to only one hexagon 
+	 */	
+	public HexagonalGrid(int maxRows, int radius) {
+		this.maxRows = maxRows;
+		
 		nodes = new ArrayList<Node>();
 		nodesByRadius = new ArrayList<ArrayList<Node>>();
 		nodesIndex = new HashMap<Node, Integer>();
@@ -56,6 +76,7 @@ public class HexagonalGrid implements Cloneable {
 		}
 		
 	}
+	
 	private void addRadius(int r) {
 		ArrayList<Node> newNodes= createNodesInRadius(r);
 						
@@ -69,28 +90,60 @@ public class HexagonalGrid implements Cloneable {
 		ArrayList<Node> listNodes = new ArrayList<Node>();
 		
 		if (radius == 0) {
+			currenRows = 1;
 			Node node = new Node(0, 0);
 			listNodes.add(node);			
 		}
 		else {
+			updateCurrentRows(radius);			
+			
+			int minInNonLimited = minRowInNonLimitedGrid(radius);
+			int maxInNonLimited = maxRowInNonLimitedGrid(radius);
+			
+			int rowInNonLimited = 0;
+			
 			double x = - INNER_RADIUS * radius;
 			double y = - NEIGHBOURS_DIAGONAL_Y * radius;
 			
 			for(int i = 0; i < DIRECTION_SHIFT.length; ++i) {
 				double xShift = DIRECTION_SHIFT[i][0];
 				double yShift = DIRECTION_SHIFT[i][1];
-				for(int j = 0; j < radius; ++j) {
+				
+				for(int j = 0; j < radius; ++j) {					
 					x += xShift;
 					y += yShift;
 					
-					Node node = new Node(x, y);
-					listNodes.add(node);
+					rowInNonLimited += yShift > 0 ? 1 : (yShift < 0 ? -1 : 0);
+					
+					if ((minInNonLimited <= rowInNonLimited) && (rowInNonLimited <= maxInNonLimited)) {						
+						Node node = new Node(x, y);
+						listNodes.add(node);
+					}
 				}
 			}
 			
 		}
 		
 		return listNodes;
+	}
+
+	private void updateCurrentRows(int radius) {
+		int rows = rowsInNonLimitedGrid(radius);
+		currenRows = (maxRows <= 0 || rows <= maxRows) ? rows : maxRows;
+	}
+
+	private int rowsInNonLimitedGrid(int radius) {
+		return 2 * radius + 1;
+	}
+
+	private int minRowInNonLimitedGrid(int radius) {
+		double excess = ((double) rowsInNonLimitedGrid(radius) - currenRows)/2;
+		return (int) Math.floor(excess);
+	}
+
+	private int maxRowInNonLimitedGrid(int radius) {
+		double excess = ((double) rowsInNonLimitedGrid(radius) - currenRows)/2;
+		return (int) (rowsInNonLimitedGrid(radius) - 1 - Math.ceil(excess));
 	}
 	
 	private void updateCache() {
@@ -167,6 +220,10 @@ public class HexagonalGrid implements Cloneable {
 
 	public int radius() {
 		return nodesByRadius.size() - 1;
+	}
+	
+	public int maxRows() {
+		return maxRows;
 	}
 	
 	public int size() {
@@ -266,10 +323,9 @@ public class HexagonalGrid implements Cloneable {
 		return result;
 	}
 	
-	private List<List<Node>> initializeResult() {
-		int numRows = 2 * radius() + 1;
-		List<List<Node>> result = new ArrayList<List<Node>>(numRows);
-		for (int i = 0; i < numRows; ++i) {
+	private List<List<Node>> initializeResult() {		
+		List<List<Node>> result = new ArrayList<List<Node>>(currenRows);
+		for (int i = 0; i < currenRows; ++i) {
 			result.add( new ArrayList<Node>() ); 
 		}
 		return result;
@@ -277,25 +333,34 @@ public class HexagonalGrid implements Cloneable {
 	
 	private void AddNodesRadiusZero(List<List<Node>> result, int radius,
 			Iterator<Node> nodeIt) {
-		int row = radius() - radius;
+		int row = currenRows / 2;
 		result.get(row).add( nodeIt.next() );
 	}
 	
 
 	private void AddNodes(List<List<Node>> result, Iterator<Node> nodeIt, int radius) {
-		int row = radius() - radius;
+		int minInNonLimited = minRowInNonLimitedGrid( radius() );
+		int maxRowInNonLimited = maxRowInNonLimitedGrid( radius() );
+		
+		int rowInNonLimited = radius() - radius;
+		int resultRow = rowInNonLimited - minInNonLimited;
 		
 		for(int i = 0; i < DIRECTION_SHIFT.length; ++i) {
 			double xShift = DIRECTION_SHIFT[i][0];
 			double yShift = DIRECTION_SHIFT[i][1];
 			
 			for(int j = 0; j < radius; ++j) {
-				row += (yShift > 0) ? 1 : ((yShift < 0)? -1 : 0); 
-				if (isAdd2End(xShift, yShift)) {
-					result.get(row).add(nodeIt.next());
-				}
-				else {
-					result.get(row).add(0, nodeIt.next());
+				int increment = (yShift > 0) ? 1 : ((yShift < 0)? -1 : 0);
+				rowInNonLimited += increment; 
+				resultRow += increment;
+				
+				if ((minInNonLimited <= rowInNonLimited) && (rowInNonLimited <= maxRowInNonLimited)) {		
+					if (isAdd2End(xShift, yShift)) {
+						result.get(resultRow).add(nodeIt.next());
+					}
+					else {
+						result.get(resultRow).add(0, nodeIt.next());
+					}
 				}
 			}
 		}
@@ -304,7 +369,6 @@ public class HexagonalGrid implements Cloneable {
 	private boolean isAdd2End(double xShift, double yShift) {
 		return yShift > 0 || (yShift == 0 && xShift > 0);
 	}
-	
 	
 	private String toString(List<List<Node>> printGrid) {
 		StringBuilder result = new StringBuilder( size() * 3);

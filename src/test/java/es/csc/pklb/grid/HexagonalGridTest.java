@@ -32,6 +32,7 @@ public class HexagonalGridTest {
 		HexagonalGrid grid = new HexagonalGrid(0);
 		
 		assertEquals(0, grid.radius());
+		assertEquals(0, grid.maxRows());
 		
 		assertEquals(1, grid.size());
 		assertEquals(1, grid.nodesInRadius(0).size());
@@ -42,24 +43,51 @@ public class HexagonalGridTest {
 		HexagonalGrid grid = new HexagonalGrid(1);
 		
 		assertEquals(1, grid.radius());
+		assertEquals(0, grid.maxRows());
 		
 		assertEquals(7, grid.size());
 		assertEquals(1, grid.nodesInRadius(0).size());
 		assertEquals(6, grid.nodesInRadius(1).size());
 	}
-	
 
 	@Test
 	public void numberNodesRadius2() {
 		HexagonalGrid grid = new HexagonalGrid(2);
 		
 		assertEquals(2, grid.radius());
+		assertEquals(0, grid.maxRows());
 		
 		assertEquals(19, grid.size());
 		assertEquals(1, grid.nodesInRadius(0).size());
 		assertEquals(6, grid.nodesInRadius(1).size());
 		assertEquals(12, grid.nodesInRadius(2).size());
-	}	
+	}
+	
+	@Test
+	public void numberNodesRadius2MaxRows3() {
+		HexagonalGrid grid = new HexagonalGrid(3, 2);
+		
+		assertEquals(2, grid.radius());
+		assertEquals(3, grid.maxRows());
+		
+		assertEquals(13, grid.size());
+		assertEquals(1, grid.nodesInRadius(0).size());
+		assertEquals(6, grid.nodesInRadius(1).size());
+		assertEquals(6, grid.nodesInRadius(2).size());
+	}
+	
+	@Test
+	public void numberNodesRadius2MaxRows2() {
+		HexagonalGrid grid = new HexagonalGrid(2, 2);
+		
+		assertEquals(2, grid.radius());
+		assertEquals(2, grid.maxRows());
+		
+		assertEquals(9, grid.size());
+		assertEquals(1, grid.nodesInRadius(0).size());
+		assertEquals(4, grid.nodesInRadius(1).size());
+		assertEquals(4, grid.nodesInRadius(2).size());
+	}
 	
 	@Test
 	public void distancesAllNodesRadiusOne() {
@@ -100,7 +128,7 @@ public class HexagonalGridTest {
 	}
 	
 	@Test
-	public void totalDistance() {
+	public void distancesAllNodesRadiusTwo() {
 		HexagonalGrid grid = generateRandomGrid(2);
 
 		double expectedDistance = 0;
@@ -110,6 +138,77 @@ public class HexagonalGridTest {
 		expectedDistance /= 2;
 		
 		assertEquals(expectedDistance, grid.totalDistance(), 0.000001);
+	}
+	
+	@Test
+	public void distancesAllNodesRadius2MaxRows2() {
+		HexagonalGrid grid = new HexagonalGrid(2, 2);
+		
+		fillGraph(grid);
+		
+		Node center = grid.nodesInRadius(0).get(0);
+		double expectedDistance =  4 * 2 * HexagonalGrid.INNER_RADIUS
+									+ 2 * 4 * HexagonalGrid.INNER_RADIUS
+									+ 2 * 3 * HexagonalGrid.OUTER_RADIUS;
+		assertEquals(expectedDistance, grid.distanceFrom(center), 0.00001);
+		
+		Node nodeRadius1 = grid.nodesInRadius(1).get(0);
+		expectedDistance = 	4 * 2 * HexagonalGrid.INNER_RADIUS
+				
+							+ 1 * 4 * HexagonalGrid.INNER_RADIUS							
+							+ 2 * 3 * HexagonalGrid.OUTER_RADIUS
+														
+							+ 1 * (new Point(0,0)).distance( new Point(5 * HexagonalGrid.INNER_RADIUS, 1.5 * HexagonalGrid.OUTER_RADIUS));
+		assertEquals(expectedDistance, grid.distanceFrom(nodeRadius1), 0.00001);
+		
+		
+		Node nodeRadius2 = grid.nodesInRadius(2).get(0);
+		expectedDistance = 	3 * 2 * HexagonalGrid.INNER_RADIUS
+				
+							+ 1 * 4 * HexagonalGrid.INNER_RADIUS
+							+ 1 * 3 * HexagonalGrid.OUTER_RADIUS
+							
+							+ 1 * 6 * HexagonalGrid.INNER_RADIUS							
+							+ 1 * (new Point(0,0)).distance( new Point(HexagonalGrid.INNER_RADIUS, 4.5 * HexagonalGrid.OUTER_RADIUS))
+							
+							+ 1 * (new Point(0,0)).distance( new Point(2 * HexagonalGrid.INNER_RADIUS, 6 * HexagonalGrid.OUTER_RADIUS));
+		assertEquals(expectedDistance, grid.distanceFrom(nodeRadius2), 0.00001);
+	}
+	
+	@Test
+	public void distancesAllNodesRadius2MaxRows3() {
+		HexagonalGrid grid = new HexagonalGrid(3, 2);
+		
+		fillGraph(grid);
+		
+		Node center = grid.nodesInRadius(0).get(0);
+		double expectedDistance =  6 * 2 * HexagonalGrid.INNER_RADIUS
+									+ 2 * 4 * HexagonalGrid.INNER_RADIUS
+									+ 4 * 3 * HexagonalGrid.OUTER_RADIUS;
+		assertEquals(expectedDistance, grid.distanceFrom(center), 0.00001);
+		
+		Node nodeRadius1 = grid.nodesInRadius(1).get(0);
+		expectedDistance = 	4 * 2 * HexagonalGrid.INNER_RADIUS
+				
+							+ 3 * 4 * HexagonalGrid.INNER_RADIUS							
+							+ 3 * 3 * HexagonalGrid.OUTER_RADIUS
+														
+							+ 2 * (new Point(0,0)).distance( new Point(5 * HexagonalGrid.INNER_RADIUS, 1.5 * HexagonalGrid.OUTER_RADIUS));
+		assertEquals(expectedDistance, grid.distanceFrom(nodeRadius1), 0.00001);
+		
+		
+		Node nodeRadius2 = grid.nodesInRadius(2).get(0);
+		expectedDistance = 	3 * 2 * HexagonalGrid.INNER_RADIUS
+				
+							+ 2 * 4 * HexagonalGrid.INNER_RADIUS
+							+ 2 * 3 * HexagonalGrid.OUTER_RADIUS
+							
+							+ 1 * 6 * HexagonalGrid.INNER_RADIUS							
+							+ 2 * (new Point(0,0)).distance( new Point(HexagonalGrid.INNER_RADIUS, 4.5 * HexagonalGrid.OUTER_RADIUS))
+							
+							+ 1 * 6 * HexagonalGrid.OUTER_RADIUS
+							+ 1 * (new Point(0,0)).distance( new Point(2 * HexagonalGrid.INNER_RADIUS, 6 * HexagonalGrid.OUTER_RADIUS));
+		assertEquals(expectedDistance, grid.distanceFrom(nodeRadius2), 0.00001);
 	}
 		
 	@Test
@@ -153,6 +252,43 @@ public class HexagonalGridTest {
 							
 							+ 1 * 6 * HexagonalGrid.OUTER_RADIUS
 							+ 2 * (new Point(0,0)).distance( new Point(2 * HexagonalGrid.INNER_RADIUS, 6 * HexagonalGrid.OUTER_RADIUS));
+		assertEquals(expectedDistance, grid.distanceFrom(nodeRadius2), 0.00001);
+	}
+	
+	@Test
+	public void expandGraphMaxRows3() {
+		HexagonalGrid grid = new HexagonalGrid(3, 1)		;
+		grid.expand();
+		
+		fillGraph(grid);
+		
+		Node center = grid.nodesInRadius(0).get(0);
+		double expectedDistance =  6 * 2 * HexagonalGrid.INNER_RADIUS
+									+ 2 * 4 * HexagonalGrid.INNER_RADIUS
+									+ 4 * 3 * HexagonalGrid.OUTER_RADIUS;
+		assertEquals(expectedDistance, grid.distanceFrom(center), 0.00001);
+		
+		Node nodeRadius1 = grid.nodesInRadius(1).get(0);
+		expectedDistance = 	4 * 2 * HexagonalGrid.INNER_RADIUS
+				
+							+ 3 * 4 * HexagonalGrid.INNER_RADIUS							
+							+ 3 * 3 * HexagonalGrid.OUTER_RADIUS
+														
+							+ 2 * (new Point(0,0)).distance( new Point(5 * HexagonalGrid.INNER_RADIUS, 1.5 * HexagonalGrid.OUTER_RADIUS));
+		assertEquals(expectedDistance, grid.distanceFrom(nodeRadius1), 0.00001);
+		
+		
+		Node nodeRadius2 = grid.nodesInRadius(2).get(0);
+		expectedDistance = 	3 * 2 * HexagonalGrid.INNER_RADIUS
+				
+							+ 2 * 4 * HexagonalGrid.INNER_RADIUS
+							+ 2 * 3 * HexagonalGrid.OUTER_RADIUS
+							
+							+ 1 * 6 * HexagonalGrid.INNER_RADIUS							
+							+ 2 * (new Point(0,0)).distance( new Point(HexagonalGrid.INNER_RADIUS, 4.5 * HexagonalGrid.OUTER_RADIUS))
+							
+							+ 1 * 6 * HexagonalGrid.OUTER_RADIUS
+							+ 1 * (new Point(0,0)).distance( new Point(2 * HexagonalGrid.INNER_RADIUS, 6 * HexagonalGrid.OUTER_RADIUS));
 		assertEquals(expectedDistance, grid.distanceFrom(nodeRadius2), 0.00001);
 	}
 
@@ -258,6 +394,35 @@ public class HexagonalGridTest {
 				                 "null 5 0 2 10 \r\n" +
 								  "null 4 3 11 \r\n" +
 				                   "null 13 12 \r\n";
+		
+		assertEquals(expectedResult, grid.toString());
+	}
+	
+	@Test
+	public void toStringNonEmpyNodesMaxRows2() {
+		HexagonalGrid grid = new HexagonalGrid(2, 2);
+		
+		for (int i = 0, n = grid.size(); i < n; ++i) {
+			grid.nodes().get(i).setContent( new Key( ""+ i) );
+		}
+		
+		String expectedResult =	  "8 4 1 5 \r\n" +
+				                 "7 3 0 2 6 \r\n";
+		
+		assertEquals(expectedResult, grid.toString());
+	}
+	
+	@Test
+	public void toStringNonEmpyNodesMaxRows3() {
+		HexagonalGrid grid = new HexagonalGrid(3, 2);
+		
+		for (int i = 0, n = grid.size(); i < n; ++i) {
+			grid.nodes().get(i).setContent( new Key( ""+ i) );
+		}
+		
+		String expectedResult =	  "12 6 1 7 \r\n" +
+				                 "11 5 0 2 8 \r\n" +
+								  "10 4 3 9 \r\n";
 		
 		assertEquals(expectedResult, grid.toString());
 	}
