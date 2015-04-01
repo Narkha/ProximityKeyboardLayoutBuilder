@@ -7,13 +7,15 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-package es.csc.proximitykeyboardlayoutbuilder;
+package es.csc.pklb.grid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import es.csc.pklb.frecuency.Key;
 
 public class HexagonalGrid implements Cloneable {
 	public static final double INNER_RADIUS = 1.0;

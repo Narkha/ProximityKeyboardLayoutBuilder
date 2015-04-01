@@ -7,10 +7,11 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-package es.csc.proximitykeyboardlayoutbuilder;
+package es.csc.pklb.frecuency;
 
 import org.junit.*;
 
+import es.csc.pklb.frecuency.Key;
 import static org.junit.Assert.*;
 
 

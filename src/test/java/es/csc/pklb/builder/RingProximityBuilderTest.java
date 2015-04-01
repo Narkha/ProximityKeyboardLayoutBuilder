@@ -7,7 +7,7 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-package es.csc.proximitykeyboardlayoutbuilder;
+package es.csc.pklb.builder;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +16,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import es.csc.proximitykeyboardlayoutbuilder.proximitybuilder.RingProximityBuilder;
+import es.csc.pklb.buider.RingProximityBuilder;
+import es.csc.pklb.frecuency.Key;
+import es.csc.pklb.frecuency.KeyFrecuencyGraph;
+import es.csc.pklb.grid.HexagonalWeightedGrid;
+import es.csc.pklb.grid.Node;
 
 public class RingProximityBuilderTest {
 

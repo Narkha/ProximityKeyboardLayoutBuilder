@@ -7,7 +7,7 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-package es.csc.proximitykeyboardlayoutbuilder;
+package es.csc.pklb.grid;
 
 import static org.junit.Assert.*;
 
@@ -15,6 +15,11 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
+
+import es.csc.pklb.frecuency.Key;
+import es.csc.pklb.frecuency.KeyFrecuencyGraph;
+import es.csc.pklb.grid.HexagonalWeightedGrid;
+import es.csc.pklb.grid.Node;
 
 public class HexagonalWeightedGridTest {
 

@@ -7,7 +7,9 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-package es.csc.proximitykeyboardlayoutbuilder;
+package es.csc.pklb.grid;
+
+import es.csc.pklb.frecuency.KeyFrecuencyGraph;
 
 /***
  * 

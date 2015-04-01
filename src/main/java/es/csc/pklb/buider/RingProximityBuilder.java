@@ -7,7 +7,7 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-package es.csc.proximitykeyboardlayoutbuilder.proximitybuilder;
+package es.csc.pklb.buider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,10 +21,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import es.csc.proximitykeyboardlayoutbuilder.HexagonalWeightedGrid;
-import es.csc.proximitykeyboardlayoutbuilder.Key;
-import es.csc.proximitykeyboardlayoutbuilder.KeyFrecuencyGraph;
-import es.csc.proximitykeyboardlayoutbuilder.Node;
+import es.csc.pklb.frecuency.Key;
+import es.csc.pklb.frecuency.KeyFrecuencyGraph;
+import es.csc.pklb.grid.HexagonalWeightedGrid;
+import es.csc.pklb.grid.Node;
 
 public class RingProximityBuilder {	
 	private KeyFrecuencyGraph weights;

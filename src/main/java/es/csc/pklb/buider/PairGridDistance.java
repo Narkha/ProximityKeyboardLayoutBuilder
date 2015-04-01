@@ -1,6 +1,6 @@
-package es.csc.proximitykeyboardlayoutbuilder.proximitybuilder;
+package es.csc.pklb.buider;
 
-import es.csc.proximitykeyboardlayoutbuilder.HexagonalWeightedGrid;
+import es.csc.pklb.grid.HexagonalWeightedGrid;
 
 class PairGridDistance {
 	HexagonalWeightedGrid grid;

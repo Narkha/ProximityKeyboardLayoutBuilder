@@ -1,9 +1,9 @@
-package es.csc.proximitykeyboardlayoutbuilder.proximitybuilder;
+package es.csc.pklb.buider;
 
 import java.util.Stack;
 
-import es.csc.proximitykeyboardlayoutbuilder.HexagonalWeightedGrid;
-import es.csc.proximitykeyboardlayoutbuilder.KeyFrecuencyGraph;
+import es.csc.pklb.frecuency.KeyFrecuencyGraph;
+import es.csc.pklb.grid.HexagonalWeightedGrid;
 
 public class GridCache {	
 	private int radius;

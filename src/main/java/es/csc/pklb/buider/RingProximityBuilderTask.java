@@ -1,12 +1,12 @@
-package es.csc.proximitykeyboardlayoutbuilder.proximitybuilder;
+package es.csc.pklb.buider;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import es.csc.proximitykeyboardlayoutbuilder.HexagonalWeightedGrid;
-import es.csc.proximitykeyboardlayoutbuilder.Key;
-import es.csc.proximitykeyboardlayoutbuilder.Node;
+import es.csc.pklb.frecuency.Key;
+import es.csc.pklb.grid.HexagonalWeightedGrid;
+import es.csc.pklb.grid.Node;
 
 
 class RingProximityBuilderTask implements Callable<PairGridDistance> {

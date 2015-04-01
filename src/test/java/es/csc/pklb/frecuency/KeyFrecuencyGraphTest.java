@@ -7,13 +7,15 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-package es.csc.proximitykeyboardlayoutbuilder;
+package es.csc.pklb.frecuency;
 
 import java.io.IOException;
 import java.util.List;
 
 import org.junit.*;
 
+import es.csc.pklb.frecuency.Key;
+import es.csc.pklb.frecuency.KeyFrecuencyGraph;
 import static org.junit.Assert.*;
 
 public class KeyFrecuencyGraphTest {

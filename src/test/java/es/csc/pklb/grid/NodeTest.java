@@ -7,13 +7,15 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
-package es.csc.proximitykeyboardlayoutbuilder;
+package es.csc.pklb.grid;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import es.csc.geometry.Point;
+import es.csc.pklb.frecuency.Key;
+import es.csc.pklb.grid.Node;
 
 public class NodeTest {
 	@Test
