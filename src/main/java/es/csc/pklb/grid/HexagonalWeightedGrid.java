@@ -22,6 +22,10 @@ public class HexagonalWeightedGrid extends HexagonalGrid
 	private KeyFrecuencyGraph weights;
 
 	public HexagonalWeightedGrid(int radius, KeyFrecuencyGraph weights) {
+		this(0, radius, weights);
+	}
+	
+	public HexagonalWeightedGrid(int maxRows, int radius, KeyFrecuencyGraph weights) {
 		super(radius);
 		
 		this.weights = weights;

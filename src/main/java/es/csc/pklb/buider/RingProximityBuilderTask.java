@@ -20,7 +20,7 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 								Map<Key, Double>[] innerDistances, 
 								List<Key> keys, 
 								int firstKeyToPlace) {		
-		cache = new GridCache(grid.radius(), grid.getWeights());
+		cache = new GridCache(grid.maxRows(), grid.radius(), grid.getWeights());
 		
 		this.originalGrid = grid;
 		this.innerDistances = innerDistances;

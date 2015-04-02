@@ -27,16 +27,18 @@ import es.csc.pklb.grid.HexagonalWeightedGrid;
 import es.csc.pklb.grid.Node;
 
 public class RingProximityBuilder {	
+	private int maxRows;
 	private KeyFrecuencyGraph weights;
 	
-	public RingProximityBuilder(KeyFrecuencyGraph weights) {			
+	public RingProximityBuilder(KeyFrecuencyGraph weights) {
+		this.maxRows = 0;
 		this.weights = weights;
 	}
 	
 	public HexagonalWeightedGrid build() throws InterruptedException {			
 		List<Key> keysByWeight = weights.keysSortedByFrecuency();
 		
-		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(0, weights);
+		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(maxRows, 0, weights);
 		
 		placeMostUsedKey(grid, keysByWeight);		
 		
@@ -78,7 +80,7 @@ public class RingProximityBuilder {
 													throws InterruptedException {		
 		Map<Key, Double>[] innerDistances = calculateInnerDistances(grid, keys);				
 				
-		HexagonalWeightedGrid outerKeysGrid = new HexagonalWeightedGrid(grid.radius(), 
+		HexagonalWeightedGrid outerKeysGrid = new HexagonalWeightedGrid(maxRows, grid.radius(), 
 																	grid.getWeights());
 								
 		placeFirstKeyOuterRadius(outerKeysGrid, keys);
