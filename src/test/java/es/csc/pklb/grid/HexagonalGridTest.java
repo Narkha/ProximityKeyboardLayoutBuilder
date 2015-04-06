@@ -291,13 +291,6 @@ public class HexagonalGridTest {
 							+ 1 * (new Point(0,0)).distance( new Point(2 * HexagonalGrid.INNER_RADIUS, 6 * HexagonalGrid.OUTER_RADIUS));
 		assertEquals(expectedDistance, grid.distanceFrom(nodeRadius2), 0.00001);
 	}
-
-	private void fillGraph(HexagonalGrid grid) {
-		List<Node> nodes = grid.nodes();
-		for(Node node : nodes) {
-			node.setContent( new Key("0") );
-		}
-	}
 	
 	@Test
 	public void testClone() {
@@ -330,38 +323,7 @@ public class HexagonalGridTest {
 		for (int i = 0, n = grid.size(); i < n; ++i) {
 			assertNotEquals(grid.nodes().get(i), other.nodes().get(i));
 			assertEquals(grid.nodes().get(i).getContent(), other.nodes().get(i).getContent());
-		}
-	
-	}
-
-	private HexagonalGrid generateRandomGrid(int radius) {
-		HexagonalGrid grid = new HexagonalGrid(radius);
-		List<Node> nodes = grid.nodes();
-		
-		List<Integer> indexes = generateRandomIndex(grid.size() / 2, 0, grid.size());
-		
-		for (int i = 0, n = indexes.size(); i < n; ++i) {
-			Key key = new Key( Integer.toString(i) );
-			nodes.get(i).setContent(key);
-		}
-		
-		return grid;
-	}
-
-	private List<Integer> generateRandomIndex(int length, int floor, int ceiling) {
-		Random random = new Random();
-		
-		Set<Integer> numbers = new HashSet<Integer>();
-		for (int i = 0; i < length; ++i) {
-			Integer number;
-			do {
-				number = random.nextInt(ceiling) + floor;
-			} while( numbers.contains(number) ) ;
-				
-			numbers.add(number);
-		}
-		
-		return new ArrayList<Integer>(numbers);		
+		}	
 	}
 	
 	@Test
@@ -425,5 +387,76 @@ public class HexagonalGridTest {
 								  "10 4 3 9 \r\n";
 		
 		assertEquals(expectedResult, grid.toString());
+	}
+	
+	@Test
+	public void rotate() {
+		HexagonalGrid grid = new HexagonalGrid(0, 3);
+
+		fillGraph(grid);
+		
+		HexagonalGrid rotationGrid = (HexagonalGrid) grid.clone();
+		for (int i = 1; i <= HexagonalGrid.EDGES; ++i) {
+			rotationGrid.rotate();
+			
+			assertEquals(grid.nodesInRadius(0).get(0).getContent(), 
+							grid.nodesInRadius(0).get(0).getContent());
+						
+			for(int r = 1, R = grid.radius(), size; r <= R; ++r) {
+				size = HexagonalGrid.EDGES * r;
+				List<Node> gridNodes = grid.nodesInRadius(r);
+				List<Node> rotationNodes = rotationGrid.nodesInRadius(r);
+				
+				for(int j = 0, index2; j < size; j += r) {
+					index2 = (j + i * r) % size;
+					
+					assertEquals(gridNodes.get(j).getContent(), rotationNodes.get(index2).getContent());
+				}
+			}
+		}
+		
+		for(int i = 0, n = grid.size(); i < n; ++i) {
+			assertEquals(grid.nodes().get(i).getContent(), rotationGrid.nodes().get(i).getContent());
+		}
+	}
+	
+
+
+	private void fillGraph(HexagonalGrid grid) {
+		int i = 0;
+		List<Node> nodes = grid.nodes();
+		for(Node node : nodes) {
+			node.setContent( new Key(i++ + "") );
+		}
+	}
+
+	private HexagonalGrid generateRandomGrid(int radius) {
+		HexagonalGrid grid = new HexagonalGrid(radius);
+		List<Node> nodes = grid.nodes();
+		
+		List<Integer> indexes = generateRandomIndex(grid.size() / 2, 0, grid.size());
+		
+		for (int i = 0, n = indexes.size(); i < n; ++i) {
+			Key key = new Key( Integer.toString(i) );
+			nodes.get(i).setContent(key);
+		}
+		
+		return grid;
+	}
+
+	private List<Integer> generateRandomIndex(int length, int floor, int ceiling) {
+		Random random = new Random();
+		
+		Set<Integer> numbers = new HashSet<Integer>();
+		for (int i = 0; i < length; ++i) {
+			Integer number;
+			do {
+				number = random.nextInt(ceiling) + floor;
+			} while( numbers.contains(number) ) ;
+				
+			numbers.add(number);
+		}
+		
+		return new ArrayList<Integer>(numbers);		
 	}
 }

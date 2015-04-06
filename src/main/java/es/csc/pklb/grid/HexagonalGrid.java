@@ -18,6 +18,8 @@ import java.util.Map;
 import es.csc.pklb.frecuency.Key;
 
 public class HexagonalGrid implements Cloneable {
+	public static final int EDGES = 6;
+	
 	public static final double INNER_RADIUS = 1.0;
 	public static final double OUTER_RADIUS = 2 / Math.sqrt(3);
 	public static final double NEIGHBOURS_DIAGONAL_Y = Math.sqrt(3);
@@ -381,5 +383,33 @@ public class HexagonalGrid implements Cloneable {
 		}
 		
 		return result.toString();
+	}
+	
+	/**
+	 * Rotate the the content of the grid in clockwise
+	 */
+	public void rotate() {
+		for(int r = 1, R = radius(); r <= R; ++r) {
+			rotateRadius(r);			
+		}
+	}
+
+	private void rotateRadius(int r) {
+		List<Node> nodes = nodesInRadius(r);
+		int size = nodes.size();
+		
+		for(int j = size - 1; j >= r; --j) {		
+			swapContent(nodes, j, j - r);					
+		}
+	}
+
+	private void swapContent(List<Node> nodes, int index1, int index2) {
+		Node node1 = nodes.get(index1);
+		Node node2 = nodes.get(index2);
+		
+		Key tmp = node1.getContent();
+		
+		node1.setContent( node2.getContent() );
+		node2.setContent(tmp);
 	}
 }
