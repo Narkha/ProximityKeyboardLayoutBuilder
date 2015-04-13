@@ -70,7 +70,7 @@ public class RingProximityBuilder {
 		int maxRadius = (maxRows - 1) / 2;
 		int maxNodes = 1 + HexagonalWeightedGrid.EDGES * (maxRadius * (maxRadius + 1) / 2);
 		
-		return (idealRadius > maxRadius) && (size > (maxNodes + 2 * maxRadius));
+		return (idealRadius > maxRadius) && (size > (maxNodes + 2 * maxRows));
 	}
 
 	private int idealRadius(int size) {

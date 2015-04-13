@@ -220,6 +220,13 @@ public class RingProximityBuilderTest {
 		
 		return expected;
 	}
+		
+	public void validConfiguration3Rows() throws IOException {
+		String keysFile = "data/test/RingProximityBuilderTest/thirteenKeys.config",
+				dataFile = "data/test/RingProximityBuilderTest/empty.in";
+		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
+		new RingProximityBuilder(3, weights);
+	}
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void invalidConfiguration3Rows() throws IOException {
@@ -235,5 +242,12 @@ public class RingProximityBuilderTest {
 				dataFile = "data/test/RingProximityBuilderTest/empty.in";
 		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
 		new RingProximityBuilder(5, weights);
+	}
+	
+	public void validConfiguration5Rows() throws IOException {
+		String keysFile = "data/test/RingProximityBuilderTest/thirteenKeys.config",
+				dataFile = "data/test/RingProximityBuilderTest/empty.in";
+		KeyFrecuencyGraph weights = new KeyFrecuencyGraph(keysFile, dataFile);
+		new RingProximityBuilder(3, weights);
 	}
 }
