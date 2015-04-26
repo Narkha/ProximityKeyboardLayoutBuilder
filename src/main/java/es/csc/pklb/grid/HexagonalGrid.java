@@ -303,12 +303,12 @@ public class HexagonalGrid implements Cloneable {
 	
 	@Override
 	public String toString() {
-		List<List<Node>> printGrid = buildPrintRepresentation();		
+		List<List<Node>> printGrid = toRows();		
 		return toString(printGrid);
 	}
 	
 
-	private List<List<Node>> buildPrintRepresentation() {
+	public List<List<Node>> toRows() {
 		List<List<Node>> result = initializeResult();
 		
 		for (int radius = 0, R = radius(); radius <= R; ++radius) {

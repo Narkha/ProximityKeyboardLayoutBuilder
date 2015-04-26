@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android">
+    <Row>
+        <Key android:code="103" android:keyLabel="g"/>
+        <Key android:code="98" android:keyLabel="b"/>
+    </Row>
+    <Row>
+        <Key android:code="102" android:keyLabel="f"/>
+        <Key android:code="97" android:keyLabel="a"/>
+        <Key android:code="99" android:keyLabel="c"/>
+    </Row>
+    <Row>
+        <Key android:code="101" android:keyLabel="e"/>
+        <Key android:code="100" android:keyLabel="d"/>
+    </Row>
+</Keyboard>

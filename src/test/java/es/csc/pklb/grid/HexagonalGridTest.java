@@ -343,6 +343,32 @@ public class HexagonalGridTest {
 		assertEquals(expectedResult, grid.toString());
 	}
 	
+
+	
+	@Test
+	public void toRowNonEmpyNodesMaxRows3() {
+		HexagonalGrid grid = new HexagonalGrid(3, 2);
+		
+		for (int i = 0, n = grid.size(); i < n; ++i) {
+			grid.nodes().get(i).setContent( new Key( ""+ i) );
+		}
+		
+		String expected = "12, 6, 1, 7; 11, 5, 0, 2, 8; 10, 4, 3, 9; ";
+		
+		String result = "";
+		List<List<Node>> rows = grid.toRows();
+		for(List<Node> row : rows) {
+			boolean first = true;
+			for(Node node : row) {
+				result += (first ? "" : ", ") + node.getContent().toString();
+				first = false;
+			}
+			result += "; ";
+		}
+		
+		assertEquals(expected, result);
+	}
+	
 	@Test
 	public void toStringEmpyNodes() {
 		HexagonalGrid grid = new HexagonalGrid(2);
