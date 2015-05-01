@@ -11,12 +11,7 @@ package es.csc.pklb.layout;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,7 +25,10 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import es.csc.pklb.frecuency.Key;
 import es.csc.pklb.grid.HexagonalGrid;
 import es.csc.pklb.grid.Node;
 
@@ -38,45 +36,37 @@ import es.csc.pklb.grid.Node;
  * Class that generates android keyboard layouts. 
  */
 public class LayoutBuilder {
-	private static final Pattern LINE_PATTERN= Pattern.compile("(.) (\\d+)");
+	private static final String XML_ANDROID_NAMESPACE_URL = "http://schemas.android.com/apk/res/android";
+	private static final String XML_ANDROID_NAMESPACE_NAME = "xmlns:android";
 	
-	private Map<Character, Integer> codes;
+	private static final String XML_ATRIBITE_CODES = "android:codes";
+	
+	private static final String XML_KEYBOARD_ELEMENT = "Keyboard";
+	private static final String XML_ROW_ELEMENT = "Row";
+	private static final String XML_KEY_LABEL = "Key";
+	
+	NodeList androidKeys;
 	
 	/***
-	 * The constructor reads the relation of keys and their android key codes.
-	 * Each line of the file should containt the letter that the keyboard is going to show,
-	 * only one, an space and an integer, eg: "a 97".
-	 * 
-	 * @param keyCodesFile
-	 * 
+	 * @param adroidKeysFile path of an xml that contains the xml keys to be uses in the template
 	 * @throws IOException if an I/O error occurs reading from the file or a malformed or 
 	 * 		                unmappable byte sequence is read.
-	 * @throws IllegalArgumentException the format of a line is not valid.
+	 * @throws SAXException Error parsing the xml
 	 */
-	public LayoutBuilder(String keyCodesFile) throws IOException, IllegalArgumentException {
-		codes = new HashMap<Character, Integer>();
-		
-		List<String> lines = Files.readAllLines(Paths.get(keyCodesFile));		
-		for(String line: lines) {
-			if (line.length() > 0) {
-				parseLine(line);
-			}
-		}
-	}
+	public LayoutBuilder(String adroidKeysFile) throws IOException, SAXException {
+		try {
+			File fXmlFile = new File(adroidKeysFile);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-	/***
-	 * @param line
-	 * @throws IllegalArgumentException the format of a line is not valid.
-	 */
-	private void parseLine(String line) throws IllegalArgumentException {
-		Matcher matcher = LINE_PATTERN.matcher(line);
-		if (!matcher.matches()) {
-			throw new IllegalArgumentException("invalid line: \"" + line + "\"");
+			Document document = dBuilder.parse(fXmlFile);
+			document.getDocumentElement().normalize();
+			
+			androidKeys = document.getElementsByTagName(XML_KEY_LABEL);
+		} 
+		catch (ParserConfigurationException e) {
+			e.printStackTrace();
 		}
-		
-		Character letter = matcher.group(1).charAt(0);
-		Integer code = Integer.valueOf( matcher.group(2) ); 
-		codes.put(letter, code);
 	}
 	
 	/***
@@ -104,8 +94,8 @@ public class LayoutBuilder {
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();		
 			Document document = docBuilder.newDocument();
 			
-			Element keyboard = document.createElement("Keyboard");
-			keyboard.setAttribute("xmlns:android", "http://schemas.android.com/apk/res/android");
+			Element keyboard = document.createElement(XML_KEYBOARD_ELEMENT);
+			keyboard.setAttribute(XML_ANDROID_NAMESPACE_NAME, XML_ANDROID_NAMESPACE_URL);
 			
 			for(List<Node> gridRow  : gridRows) {
 				addRow(document, keyboard, gridRow);
@@ -127,7 +117,7 @@ public class LayoutBuilder {
 	 */
 	private void addRow(Document document, Element keyboard, List<Node> gridRow) 
 			 													throws IllegalArgumentException {
-		Element row = document.createElement("Row");
+		Element row = document.createElement(XML_ROW_ELEMENT);
 		for(Node node : gridRow) {
 			addKey(document, row, node);
 		}
@@ -139,19 +129,38 @@ public class LayoutBuilder {
 	 */
 	private void addKey(Document document, Element row, Node node) throws IllegalArgumentException {
 		if (!node.isEmpty()) {
-			Element key = document.createElement("Key");
-			
-			char letter = node.getContent().toString().charAt(0);	
-			System.out.println(" -" + letter );
-			if (!codes.containsKey(letter)) {
-				throw new IllegalArgumentException("Code not found for key \"" + node.getContent().toString() + "\"");
-			}
-			
-			key.setAttribute("android:code", codes.get(letter).toString());
-			key.setAttribute("android:keyLabel", Character.toString(letter));
-			
+			Element key = (Element) getKeyElement( node.getContent() );
+			key = (Element) document.adoptNode(key);
 			row.appendChild(key);
 		}
+	}
+	
+	/**
+	 * Find the equivalent to key in androidKeys.
+	 * The returned xml element belongs to the another xml document, so it is necesesary
+	 * call to document.adopNode(...) before append this element
+	 * 
+	 * @param key
+	 * @return the element with the 
+	 * @throws IllegalArgumentException if there are not equivalent in androidKeys
+	 */
+	private Element getKeyElement(Key key) throws IllegalArgumentException{
+		String code = getKeyCode(key);
+		
+		for(int i = 0, n = androidKeys.getLength(); i < n; ++i) {
+			Element element = (Element) androidKeys.item(i);
+			if (element.getAttribute(XML_ATRIBITE_CODES).equals(code)) {
+				return (Element) element.cloneNode(false);
+			}
+		}
+		
+		throw new IllegalArgumentException("Code not found for key \"" + key.toString() + "\" " + code);
+	}
+
+	private String getKeyCode(Key key) {
+		int letter = key.toString().charAt(0);
+		
+		return Integer.toString(letter);
 	}
 
 	/***
