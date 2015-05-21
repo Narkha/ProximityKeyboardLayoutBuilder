@@ -1,1 +1,7 @@
+.settings/
+
 /target/
+
+*.jar
+data/test/LayoutBuilderTest/output/
+
