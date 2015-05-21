@@ -5,18 +5,18 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import es.csc.pklb.frecuency.Key;
-import es.csc.pklb.grid.HexagonalWeightedGrid;
+import es.csc.pklb.grid.HexagonalWeightedRing;
 import es.csc.pklb.grid.Node;
 
 
 class RingProximityBuilderTask implements Callable<PairGridDistance> {
 	private GridCache cache;
-	private HexagonalWeightedGrid originalGrid;
+	private HexagonalWeightedRing originalGrid;
 	private Map<Key, Double>[] innerDistances;
 	private List<Key> keys;
 	private int firstKeyToPlace;
 	
-	public RingProximityBuilderTask(HexagonalWeightedGrid grid, 
+	public RingProximityBuilderTask(HexagonalWeightedRing grid, 
 								Map<Key, Double>[] innerDistances, 
 								List<Key> keys, 
 								int firstKeyToPlace) {		
@@ -32,7 +32,7 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 		return minimizeOuterNodesDistance(originalGrid, firstKeyToPlace);
 	}
 	
-	private PairGridDistance minimizeOuterNodesDistance(HexagonalWeightedGrid grid,
+	private PairGridDistance minimizeOuterNodesDistance(HexagonalWeightedRing grid,
 														int keyIndex) {		
 		if (keyIndex == keys.size()) {
 			return minDistanceInRotation(grid);
@@ -42,10 +42,10 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 		}		
 	}
 
-	private PairGridDistance minDistanceInRotation(HexagonalWeightedGrid grid) {
+	private PairGridDistance minDistanceInRotation(HexagonalWeightedRing grid) {
 		double outerDistance = grid.totalDistance();
 		
-		HexagonalWeightedGrid winner = cache.get();
+		HexagonalWeightedRing winner = cache.get();
 		winner.copyContent(grid);
 		double winnerDistance = innerDistanceRotation(grid) + outerDistance;
 		
@@ -65,7 +65,7 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 		return new PairGridDistance(winner, winnerDistance);
 	}
 
-	private double innerDistanceRotation(HexagonalWeightedGrid grid) {
+	private double innerDistanceRotation(HexagonalWeightedRing grid) {
 		double distance = 0;
 				
 		List<Node> outerNodes = grid.nodesInRadius( grid.radius() );
@@ -90,7 +90,7 @@ class RingProximityBuilderTask implements Callable<PairGridDistance> {
 		}
 	}
 	
-	private PairGridDistance placeNextKey(HexagonalWeightedGrid grid, int nextKey) {		
+	private PairGridDistance placeNextKey(HexagonalWeightedRing grid, int nextKey) {		
 		PairGridDistance winner = null;
 		
 		List<Node> nodes = grid.nodesInRadius( grid.radius() );

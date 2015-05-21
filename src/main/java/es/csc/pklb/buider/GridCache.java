@@ -3,14 +3,14 @@ package es.csc.pklb.buider;
 import java.util.Stack;
 
 import es.csc.pklb.frecuency.KeyFrecuencyGraph;
-import es.csc.pklb.grid.HexagonalWeightedGrid;
+import es.csc.pklb.grid.HexagonalWeightedRing;
 
 public class GridCache {
 	private int maxRows;
 	private int radius;
 	private KeyFrecuencyGraph weights;
 	
-	private Stack<HexagonalWeightedGrid> stack = new Stack<HexagonalWeightedGrid>();
+	private Stack<HexagonalWeightedRing> stack = new Stack<HexagonalWeightedRing>();
 	
 	public GridCache(int maxRows, int radius, KeyFrecuencyGraph weights) {
 		this.maxRows = maxRows;
@@ -18,16 +18,16 @@ public class GridCache {
 		this.weights = weights;
 	}
 	
-	public HexagonalWeightedGrid get() {
+	public HexagonalWeightedRing get() {
 		if (stack.isEmpty()) {
-			return new HexagonalWeightedGrid(maxRows, radius, weights);
+			return new HexagonalWeightedRing(maxRows, radius, weights);
 		}
 		else {
 			return stack.pop();
 		}
 	}
 	
-	public void release(HexagonalWeightedGrid item) {
+	public void release(HexagonalWeightedRing item) {
 		stack.push(item);
 	}
 	

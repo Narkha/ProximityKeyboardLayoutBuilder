@@ -23,14 +23,14 @@ import java.util.concurrent.TimeUnit;
 
 import es.csc.pklb.frecuency.Key;
 import es.csc.pklb.frecuency.KeyFrecuencyGraph;
-import es.csc.pklb.grid.HexagonalWeightedGrid;
+import es.csc.pklb.grid.HexagonalWeightedRing;
 import es.csc.pklb.grid.Node;
 
 /***
  * Given that minimize the distance between N keys is a NP problem of order N!, the algorithm
  * implement in this class makes the assumption that the most used the most used keys should 
  * be placed closer to the center of the grid. 
- *     1) Create a HexagonalWeightedGrid of radius 0 and place the most used key
+ *     1) Create a HexagonalRingWeightedGrid of radius 0 and place the most used key
  *     2) Expand the grid and find the next most frequent keys
  *     3) repeat 2 until all the keys are placed.  
  * 
@@ -68,7 +68,7 @@ public class RingProximityBuilder {
 	private boolean isNotSupported(int maxRows, int size) {
 		int idealRadius = idealRadius(size);
 		int maxRadius = (maxRows - 1) / 2;
-		int maxNodes = 1 + HexagonalWeightedGrid.EDGES * (maxRadius * (maxRadius + 1) / 2);
+		int maxNodes = 1 + HexagonalWeightedRing.EDGES * (maxRadius * (maxRadius + 1) / 2);
 		
 		return (idealRadius > maxRadius) && (size > (maxNodes + 2 * maxRows));
 	}
@@ -78,29 +78,29 @@ public class RingProximityBuilder {
 		int radius = 0;
 		while(size > 0) {
 			++radius;
-			size -= radius * HexagonalWeightedGrid.EDGES;
+			size -= radius * HexagonalWeightedRing.EDGES;
 		}
 		
 		return radius;
 	}
 
-	public HexagonalWeightedGrid build() throws InterruptedException {			
+	public HexagonalWeightedRing build() throws InterruptedException {			
 		List<Key> keysByWeight = weights.keysSortedByFrecuency();
 		
-		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(maxRows, 0, weights);
+		HexagonalWeightedRing grid = new HexagonalWeightedRing(maxRows, 0, weights);
 		
 		placeMostUsedKey(grid, keysByWeight);		
 		
 		return placeOtherKeys(grid, keysByWeight);
 	}
 
-	private void placeMostUsedKey(HexagonalWeightedGrid grid, List<Key> keys) {
+	private void placeMostUsedKey(HexagonalWeightedRing grid, List<Key> keys) {
 		Key mostUsedKey = keys.get(0);
 		Node center = grid.nodesInRadius(0).get(0);
 		center.setContent(mostUsedKey);
 	}
 
-	private HexagonalWeightedGrid placeOtherKeys(HexagonalWeightedGrid grid, List<Key> keys) 
+	private HexagonalWeightedRing placeOtherKeys(HexagonalWeightedRing grid, List<Key> keys) 
 													throws InterruptedException {
 		int analyzed = 1;				
 		while( analyzed < keys.size() ) {						
@@ -111,7 +111,7 @@ public class RingProximityBuilder {
 			int nodesInOuterRadius = grid.nodesInRadius( grid.radius() ).size();
 			
 			if (grid.radius() <= 1 || maxRows == 1 
-					|| nodesInOuterRadius == HexagonalWeightedGrid.EDGES * grid.radius()) {			
+					|| nodesInOuterRadius == HexagonalWeightedRing.EDGES * grid.radius()) {			
 				grid = minimizeDistance(grid, keysToPlace);
 			}
 			else {
@@ -123,7 +123,7 @@ public class RingProximityBuilder {
 		return grid;
 	}
 
-	private List<Key> keysToPlace(HexagonalWeightedGrid grid, List<Key> keys, int analyzed) {
+	private List<Key> keysToPlace(HexagonalWeightedRing grid, List<Key> keys, int analyzed) {
 		
 		int remainingKeys = keys.size() - analyzed;
 		int keysInRadius = grid.nodesInRadius( grid.radius() ).size();
@@ -132,12 +132,12 @@ public class RingProximityBuilder {
 		return keys.subList(analyzed, analyzed + keysToAnalyze);
 	}
 
-	private HexagonalWeightedGrid minimizeDistanceCutGrid(HexagonalWeightedGrid grid, List<Key> keys) throws InterruptedException {
-		grid = (HexagonalWeightedGrid) grid.clone();
+	private HexagonalWeightedRing minimizeDistanceCutGrid(HexagonalWeightedRing grid, List<Key> keys) throws InterruptedException {
+		grid = (HexagonalWeightedRing) grid.clone();
 		
 		List<PairGridDistance> results = new ArrayList<PairGridDistance>();
 		for (int i = 0; i < 3; ++i) {			
-			HexagonalWeightedGrid result = minimizeDistance(grid, keys);
+			HexagonalWeightedRing result = minimizeDistance(grid, keys);
 			results.add( new PairGridDistance(result, result.totalDistance()) );
 			grid.rotate();
 		}
@@ -147,14 +147,14 @@ public class RingProximityBuilder {
 		return min.grid;
 	}
 
-	private HexagonalWeightedGrid minimizeDistance(HexagonalWeightedGrid grid, 
+	private HexagonalWeightedRing minimizeDistance(HexagonalWeightedRing grid, 
 													List<Key> keys) 
 													throws InterruptedException {				
-		grid = (HexagonalWeightedGrid) grid.clone();
+		grid = (HexagonalWeightedRing) grid.clone();
 		
 		Map<Key, Double>[] innerDistances = calculateInnerDistances(grid, keys);				
 				
-		HexagonalWeightedGrid outerKeysGrid = new HexagonalWeightedGrid(maxRows, grid.radius(), 
+		HexagonalWeightedRing outerKeysGrid = new HexagonalWeightedRing(maxRows, grid.radius(), 
 																	grid.getWeights());
 								
 		placeFirstKeyOuterRadius(outerKeysGrid, keys);
@@ -174,7 +174,7 @@ public class RingProximityBuilder {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Map<Key, Double>[] calculateInnerDistances(HexagonalWeightedGrid grid, 
+	private Map<Key, Double>[] calculateInnerDistances(HexagonalWeightedRing grid, 
 														List<Key> keys) {
 		List<Node> outerNodes = grid.nodesInRadius( grid.radius() ); 
 		
@@ -196,14 +196,14 @@ public class RingProximityBuilder {
 		return innerDistances;
 	}
 	
-	private void placeFirstKeyOuterRadius(HexagonalWeightedGrid emptyGrid,
+	private void placeFirstKeyOuterRadius(HexagonalWeightedRing emptyGrid,
 													List<Key> keys) {
 		List<Node> outerNodes = emptyGrid.nodesInRadius( emptyGrid.radius() );
 		outerNodes.get(0).setContent( keys.get(0) );
 	}
 	
 
-	private PairGridDistance parallelizePlaceKeysTasks(HexagonalWeightedGrid grid,
+	private PairGridDistance parallelizePlaceKeysTasks(HexagonalWeightedRing grid,
 														Map<Key, Double>[] innerDistances, 
 														List<Key> keys) 
 														throws InterruptedException {	
@@ -221,7 +221,7 @@ public class RingProximityBuilder {
 	}
 
 	private List<Future<PairGridDistance>> submitTasks(ExecutorService executor, 
-														HexagonalWeightedGrid grid,
+														HexagonalWeightedRing grid,
 														Map<Key, Double>[] innerDistances, 
 														List<Key> keys) {
 		List<Node> nodes = grid.nodesInRadius( grid.radius() );
@@ -232,7 +232,7 @@ public class RingProximityBuilder {
 			
 			node.setContent( keys.get(1) );
 			
-			RingProximityBuilderTask task = new RingProximityBuilderTask((HexagonalWeightedGrid) grid.clone(), 
+			RingProximityBuilderTask task = new RingProximityBuilderTask((HexagonalWeightedRing) grid.clone(), 
 																innerDistances, keys, 2);
 			Future<PairGridDistance> future = executor.submit(task);
 			results.add(future);
@@ -264,8 +264,8 @@ public class RingProximityBuilder {
 		return Collections.min(data, new PairGridDistance(null, 0));
 	}
 	
-	private void copyOuterKeys(HexagonalWeightedGrid origin,
-			HexagonalWeightedGrid destiny) {
+	private void copyOuterKeys(HexagonalWeightedRing origin,
+			HexagonalWeightedRing destiny) {
 
 		Iterator<Node> oIt = origin.nodesInRadius( origin.radius() ).iterator();
 		Iterator<Node> dIt = destiny.nodesInRadius( destiny.radius() ).iterator();
