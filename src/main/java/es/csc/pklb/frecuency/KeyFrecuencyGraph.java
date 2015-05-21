@@ -12,6 +12,7 @@ package es.csc.pklb.frecuency;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class KeyFrecuencyGraph {
 	}
 
 	private void readKeys(String keysFile) throws IOException {
-		List<String> lines = Files.readAllLines(Paths.get(keysFile));
+		List<String> lines = Files.readAllLines(Paths.get(keysFile), StandardCharsets.UTF_8);
 		
 		keys = new ArrayList<Key>();
 		for(String line: lines) {
