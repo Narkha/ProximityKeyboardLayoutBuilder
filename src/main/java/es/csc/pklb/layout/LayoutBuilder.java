@@ -88,7 +88,7 @@ public class LayoutBuilder {
 	*/
 	private Document createXml(HexagonalGrid grid) throws IllegalArgumentException {		
 		try {
-			List<List<Node>> gridRows = grid.toRows();
+			List<List<Node>> gridRows = grid.grid();
 			
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();		

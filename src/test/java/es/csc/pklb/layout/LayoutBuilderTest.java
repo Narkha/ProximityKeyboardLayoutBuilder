@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.xml.transform.TransformerException;
 
@@ -22,6 +23,7 @@ import org.xml.sax.SAXException;
 
 import es.csc.pklb.frecuency.Key;
 import es.csc.pklb.grid.HexagonalGrid;
+import es.csc.pklb.grid.Node;
 
 public class LayoutBuilderTest {
 	@Test(expected=IOException.class)
@@ -52,8 +54,8 @@ public class LayoutBuilderTest {
 		
 		LayoutBuilder builder = new LayoutBuilder(keysFile);
 		
-		HexagonalGrid grid = new HexagonalGrid(0);
-		grid.nodes().get(0).setContent( new Key("1") );
+		HexagonalGrid grid = new HexagonalGrid(1, 1);
+		grid.grid().get(0).get(0).setContent( new Key("1") );
 		
 		builder.toXmlFile(grid, outputFile);
 	}
@@ -76,7 +78,7 @@ public class LayoutBuilderTest {
 	}
 
 	private HexagonalGrid createXmlTestGrid() {
-		HexagonalGrid grid = new HexagonalGrid(5, 3);
+		HexagonalGrid grid = new HexagonalGrid(5, 6, false);
 		Key keys[] = { 
 						new Key("aáAÁ"), new Key("bB"), new Key("cC"), new Key("dD"), new Key("eéEÉ"), 
 						new Key("fF"), new Key("gG"), new Key("hH"), new Key("iíIÍ"), new Key("jJ"),
@@ -86,8 +88,10 @@ public class LayoutBuilderTest {
 						new Key("yY"), new Key("zZ"), new Key(" ")
 					};
 		
+		Iterator<Node> it = grid.iterator();
 		for(int i = 0, n = keys.length; i < n; ++i) {
-			grid.nodes().get(i).setContent( keys[i] );
+			Node node = it.next();
+			node.setContent( keys[i] );
 		}
 		return grid;
 	}

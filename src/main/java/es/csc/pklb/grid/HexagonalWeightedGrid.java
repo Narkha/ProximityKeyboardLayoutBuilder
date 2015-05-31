@@ -20,13 +20,16 @@ import es.csc.pklb.frecuency.KeyFrecuencyGraph;
 public class HexagonalWeightedGrid extends HexagonalGrid
 									implements Cloneable {
 	private KeyFrecuencyGraph weights;
-
-	public HexagonalWeightedGrid(int radius, KeyFrecuencyGraph weights) {
-		this(0, radius, weights);
+	
+	public HexagonalWeightedGrid(int rows, int columns, KeyFrecuencyGraph weights) {
+		super(rows, columns);
+		
+		this.weights = weights;
 	}
 	
-	public HexagonalWeightedGrid(int maxRows, int radius, KeyFrecuencyGraph weights) {
-		super(maxRows, radius);
+	public HexagonalWeightedGrid(int rows, int columns, boolean shiftEvenRows, 
+			KeyFrecuencyGraph weights) {
+		super(rows, columns, shiftEvenRows);
 		
 		this.weights = weights;
 	}

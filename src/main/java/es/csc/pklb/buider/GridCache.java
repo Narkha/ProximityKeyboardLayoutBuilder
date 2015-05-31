@@ -2,28 +2,27 @@ package es.csc.pklb.buider;
 
 import java.util.Stack;
 
-import es.csc.pklb.frecuency.KeyFrecuencyGraph;
 import es.csc.pklb.grid.HexagonalWeightedRing;
+import es.csc.pklb.grid.Node;
 
 public class GridCache {
-	private int maxRows;
-	private int radius;
-	private KeyFrecuencyGraph weights;
+	private HexagonalWeightedRing model;
 	
 	private Stack<HexagonalWeightedRing> stack = new Stack<HexagonalWeightedRing>();
 	
-	public GridCache(int maxRows, int radius, KeyFrecuencyGraph weights) {
-		this.maxRows = maxRows;
-		this.radius = radius;
-		this.weights = weights;
+	public GridCache(HexagonalWeightedRing grid) {
+		this.model = (HexagonalWeightedRing) grid.clone();
+		clear(this.model);
 	}
 	
 	public HexagonalWeightedRing get() {
 		if (stack.isEmpty()) {
-			return new HexagonalWeightedRing(maxRows, radius, weights);
+			return (HexagonalWeightedRing) model.clone();
 		}
-		else {
-			return stack.pop();
+		else {			
+			HexagonalWeightedRing grid = stack.pop();
+			clear(grid);
+			return grid;
 		}
 	}
 	
@@ -31,4 +30,9 @@ public class GridCache {
 		stack.push(item);
 	}
 	
+	private void clear(HexagonalWeightedRing grid) {
+		for(Node node : grid) {
+			node.setContent(null);
+		}
+	}
 }

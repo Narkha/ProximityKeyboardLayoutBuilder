@@ -12,17 +12,17 @@ package es.csc.pklb.grid;
 import es.csc.geometry.Point;
 import es.csc.pklb.frecuency.Key;
 
-public class Node implements Cloneable {
+public class Node extends Point
+					implements Cloneable {
 
-	private Point center;
 	private Key content = null;
 
 	public Node(double x, double y) {
-		this.center = new Point(x, y);		
+		super(x, y);		
 	}
 	
 	public Node(Point center) {
-		this.center = center;		
+		super(center);		
 	}
 	
 	public void setContent(Key data) {
@@ -41,10 +41,6 @@ public class Node implements Cloneable {
 		return content == null;
 	}
 	
-	public double distance(Node other) {
-		return this.center.distance(other.center);
-	}
-	
 	@Override
 	public Object clone() {
 		try {
@@ -56,6 +52,11 @@ public class Node implements Cloneable {
 	
 	@Override
 	public String toString() {
-		return center + " " + (isEmpty() ? "NULL" : content);
+		return super.toString() + " " + (isEmpty() ? "NULL" : content);
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		return this == other;
 	}
 }

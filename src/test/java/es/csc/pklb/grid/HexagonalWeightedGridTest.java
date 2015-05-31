@@ -29,26 +29,28 @@ public class HexagonalWeightedGridTest {
 				dataFile = "data/test/HexagonalWeightedGridTest/weightedDistances.in";
 		KeyFrecuencyGraph frecuencies = new KeyFrecuencyGraph(configFile, dataFile);
 		
-		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(1, frecuencies);
+		HexagonalWeightedGrid grid = new HexagonalWeightedGrid(3, 3, frecuencies);
 		
 		List<Key> keys = frecuencies.keys();
-		List<Node> nodes = grid.nodes();
 		
-		for(int i = 0, n = keys.size(); i < n; ++i) {
-			nodes.get(i).setContent( keys.get(i) );
-		}
+		grid.get(1, 1).setContent( keys.get(0) );
+		grid.get(0, 0).setContent( keys.get(1) );
+		grid.get(0, 1).setContent( keys.get(2) );
+		grid.get(1, 2).setContent( keys.get(3) );
 		
-		double expetedDistanceFromZero = 
+		double expetedDistanceFromNode_1_1 = 
 				frecuencies.getFrecuency(keys.get(0), keys.get(1)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
 				+ frecuencies.getFrecuency(keys.get(0), keys.get(2)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
-				+ frecuencies.getFrecuency(keys.get(0), keys.get(3)) * (2 * HexagonalWeightedGrid.INNER_RADIUS);				
-		assertEquals(expetedDistanceFromZero, grid.distanceFrom(nodes.get(0)), 0.01);
+				+ frecuencies.getFrecuency(keys.get(0), keys.get(3)) * (2 * HexagonalWeightedGrid.INNER_RADIUS);
+		Node node_1_1 = grid.get(1, 1);
+		assertEquals(expetedDistanceFromNode_1_1, grid.distanceFrom(node_1_1), 0.0001);
 		
-		double expetedDistanceFromOne = 
+		double expetedDistanceFrom_0_0 = 
 				frecuencies.getFrecuency(keys.get(1), keys.get(0)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
 				+ frecuencies.getFrecuency(keys.get(1), keys.get(2)) * (2 * HexagonalWeightedGrid.INNER_RADIUS)
-				+ frecuencies.getFrecuency(keys.get(1), keys.get(3)) * (3 * HexagonalWeightedGrid.OUTER_RADIUS);				
-		assertEquals(expetedDistanceFromOne, grid.distanceFrom(nodes.get(1)), 0.01);
+				+ frecuencies.getFrecuency(keys.get(1), keys.get(3)) * (3 * HexagonalWeightedGrid.OUTER_RADIUS);
+		Node node_0_0 = grid.get(0, 0);
+		assertEquals(expetedDistanceFrom_0_0, grid.distanceFrom(node_0_0), 0.0001);
 	}
 
 }
