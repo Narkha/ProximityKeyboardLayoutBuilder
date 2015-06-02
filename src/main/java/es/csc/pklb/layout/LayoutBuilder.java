@@ -158,7 +158,13 @@ public class LayoutBuilder {
 	}
 
 	private String getKeyCode(Key key) {
-		int letter = key.toString().charAt(0);
+		int letter;
+		if (SpecialKey.class == key.getClass()) {
+			letter = ((SpecialKey) key).getCode();
+		}
+		else {
+			letter = key.toString().charAt(0);
+		}
 		
 		return Integer.toString(letter);
 	}

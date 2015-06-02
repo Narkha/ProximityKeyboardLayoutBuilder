@@ -95,4 +95,45 @@ public class LayoutBuilderTest {
 		}
 		return grid;
 	}
+	
+	
+	@Test
+	public void createXmlSpecialKeys() throws IOException, SAXException, TransformerException {
+		String keysFile = "data/test/LayoutBuilderTest/specialKeys.xml",
+				outputFile = "data/test/LayoutBuilderTest/output/createXmlSpecialKeys.xml",
+				expectedFile = "data/test/LayoutBuilderTest/createXmlSpecialKeys.xml";;
+		
+		LayoutBuilder builder = new LayoutBuilder(keysFile);		
+		HexagonalGrid grid = createXmlTestGridSpecialKeys();
+		
+		builder.toXmlFile(grid, outputFile);
+
+		assertTrue(String.format("The content of \"%s\" is not the same that the generated file \"%s\"", 
+									expectedFile, outputFile),
+					FileUtils.contentEquals(new File(outputFile), new File(expectedFile)) );
+	}
+
+	private HexagonalGrid createXmlTestGridSpecialKeys() {
+		Key languageKey = new SpecialKey(-101),
+			deleteKey = new SpecialKey(-5),
+			numbersKey = new SpecialKey(-2),
+			shiftKey = new SpecialKey(-1),
+			enterKey = new Key( Character.toString( (char) 10 ) );
+		
+		HexagonalGrid grid = new HexagonalGrid(5, 8, true);
+		Key keys[] = { 
+							deleteKey, new Key("aáAÁ"), new Key("bB"), new Key("cC"), new Key("dD"), new Key("eéEÉ"), deleteKey,
+						shiftKey, new Key("fF"), new Key("gG"), new Key("hH"), new Key("iíIÍ"), new Key("jJ"), new Key("kK"), shiftKey,
+							new Key("lL"), new Key("mM"), new Key("nN"), new Key(" "), new Key("ñÑ"), new Key("oóOÓ"), new Key("pP"), 
+						enterKey, new Key("qQ"), new Key("rR"), new Key("sS"), new Key("tT"), new Key("uúUÚ"), new Key("vV"), enterKey, 							
+							numbersKey,	new Key("."), new Key("wW"), new Key("xX"), new Key("yY"), new Key("zZ"), languageKey
+					};
+		
+		Iterator<Node> it = grid.iterator();
+		for(int i = 0, n = keys.length; i < n; ++i) {
+			Node node = it.next();
+			node.setContent( keys[i] );
+		}
+		return grid;
+	}
 }
