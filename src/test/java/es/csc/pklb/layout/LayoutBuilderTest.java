@@ -13,7 +13,10 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -57,7 +60,7 @@ public class LayoutBuilderTest {
 		HexagonalGrid grid = new HexagonalGrid(1, 1);
 		grid.grid().get(0).get(0).setContent( new Key("1") );
 		
-		builder.toXmlFile(grid, outputFile);
+		builder.toXmlFile(grid, Collections.emptyMap(), outputFile);
 	}
 	
 	
@@ -70,7 +73,7 @@ public class LayoutBuilderTest {
 		LayoutBuilder builder = new LayoutBuilder(keysFile);		
 		HexagonalGrid grid = createXmlTestGrid();
 		
-		builder.toXmlFile(grid, outputFile);
+		builder.toXmlFile(grid, Collections.emptyMap(), outputFile);
 
 		assertTrue(String.format("The content of \"%s\" is not the same that the generated file \"%s\"", 
 									expectedFile, outputFile),
@@ -96,7 +99,6 @@ public class LayoutBuilderTest {
 		return grid;
 	}
 	
-	
 	@Test
 	public void createXmlSpecialKeys() throws IOException, SAXException, TransformerException {
 		String keysFile = "data/test/LayoutBuilderTest/specialKeys.xml",
@@ -106,7 +108,32 @@ public class LayoutBuilderTest {
 		LayoutBuilder builder = new LayoutBuilder(keysFile);		
 		HexagonalGrid grid = createXmlTestGridSpecialKeys();
 		
-		builder.toXmlFile(grid, outputFile);
+		builder.toXmlFile(grid, Collections.emptyMap(), outputFile);
+
+		assertTrue(String.format("The content of \"%s\" is not the same that the generated file \"%s\"", 
+									expectedFile, outputFile),
+					FileUtils.contentEquals(new File(outputFile), new File(expectedFile)) );
+	}
+	
+	
+	@SuppressWarnings("serial")
+	@Test
+	public void createXmlSKAttributes() throws IOException, SAXException, TransformerException {
+		String keysFile = "data/test/LayoutBuilderTest/specialKeys.xml",
+				outputFile = "data/test/LayoutBuilderTest/output/createXmlSKAttributes.xml",
+				expectedFile = "data/test/LayoutBuilderTest/createXmlSKAttributes.xml";
+		
+		LayoutBuilder builder = new LayoutBuilder(keysFile);		
+		HexagonalGrid grid = createXmlTestGridSpecialKeys();
+		
+		Map<String, String> keyboardAttributes = new HashMap<String, String>() {{
+			put("android:keyWidth", "@fraction/key_width");
+			put("android:horizontalGap", "0px");
+			put("android:verticalGap", "@dimen/key_vertical_gap");
+			put("android:keyHeight", "@dimen/key_height");
+			
+		}};
+		builder.toXmlFile(grid, keyboardAttributes, outputFile);
 
 		assertTrue(String.format("The content of \"%s\" is not the same that the generated file \"%s\"", 
 									expectedFile, outputFile),

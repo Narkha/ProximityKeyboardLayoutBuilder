@@ -12,6 +12,7 @@ package es.csc.pklb.layout;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,11 +36,15 @@ import es.csc.pklb.grid.Node;
 /***
  * Class that generates android keyboard layouts. 
  */
-public class LayoutBuilder {
+public class LayoutBuilder {	
 	private static final String XML_ANDROID_NAMESPACE_URL = "http://schemas.android.com/apk/res/android";
 	private static final String XML_ANDROID_NAMESPACE_NAME = "xmlns:android";
 	
 	private static final String XML_ATRIBITE_CODES = "android:codes";
+	private static final String XML_ATTRIBUTE_KEY_EDGE_FLAG = "android:keyEdgeFlags";
+	private static final String XML_ATTRIBUTE_KEY_EDGE_FLAG_VALUE_RIGHT = "right";
+	private static final String XML_ATTRIBUTE_KEY_EDGE_FLAG_VALUE_LEFT = "left";
+
 	
 	private static final String XML_KEYBOARD_ELEMENT = "Keyboard";
 	private static final String XML_ROW_ELEMENT = "Row";
@@ -73,20 +78,22 @@ public class LayoutBuilder {
 	 * Write a keyboard layout equivalent to the content of grid in outputFile.
 	 *   
 	 * @param grid
+	 * @param keyboardAttributes pairs of attributes that will be added to the keyboard element
 	 * @param outputFile
 	 * 
 	 * @throws TransformerException Error during the process of save the xml.
 	 */
-	public void toXmlFile(HexagonalGrid grid, String outputFile) 
-			throws TransformerException {
-		Document xml = createXml(grid);
+	public void toXmlFile(HexagonalGrid grid, Map<String, String> keyboardAttributes, 
+							String outputFile) throws TransformerException {
+		Document xml = createXml(grid, keyboardAttributes);
 		saveXml(xml, outputFile);
 	}
 
 	/***
 	 * @throws IllegalArgumentException there is a key in grid with an unknown code
 	*/
-	private Document createXml(HexagonalGrid grid) throws IllegalArgumentException {		
+	private Document createXml(HexagonalGrid grid, Map<String, String> keyboardAttributes) 
+							throws IllegalArgumentException {		
 		try {
 			List<List<Node>> gridRows = grid.grid();
 			
@@ -96,6 +103,8 @@ public class LayoutBuilder {
 			
 			Element keyboard = document.createElement(XML_KEYBOARD_ELEMENT);
 			keyboard.setAttribute(XML_ANDROID_NAMESPACE_NAME, XML_ANDROID_NAMESPACE_URL);
+			
+			setKeyboardAttributes(keyboard, keyboardAttributes);
 			
 			for(List<Node> gridRow  : gridRows) {
 				addRow(document, keyboard, gridRow);
@@ -112,27 +121,50 @@ public class LayoutBuilder {
 		}
 	}
 
+	private void setKeyboardAttributes(Element element, Map<String, String> attributes) {
+		for(String key : attributes.keySet()) {
+			element.setAttribute(key, attributes.get(key));
+		}
+	}
+
 	/***
 	 * @throws IllegalArgumentException there is a key in grid with an unknown code
 	 */
 	private void addRow(Document document, Element keyboard, List<Node> gridRow) 
 			 													throws IllegalArgumentException {
 		Element row = document.createElement(XML_ROW_ELEMENT);
+		Element firstKey = null, lastKey = null;
 		for(Node node : gridRow) {
-			addKey(document, row, node);
+			lastKey = addKey(document, row, node);
+			if (firstKey == null) {
+				firstKey = lastKey;
+			}
 		}
+		
+		if (firstKey != null) {
+			firstKey.setAttribute(XML_ATTRIBUTE_KEY_EDGE_FLAG, XML_ATTRIBUTE_KEY_EDGE_FLAG_VALUE_LEFT);
+		}
+		
+		if (lastKey != null) {
+			lastKey.setAttribute(XML_ATTRIBUTE_KEY_EDGE_FLAG, XML_ATTRIBUTE_KEY_EDGE_FLAG_VALUE_RIGHT);
+		}
+		
 		keyboard.appendChild(row);
 	}
 
 	/***
 	 * @throws IllegalArgumentException there is a key in grid with an unknown code
 	 */
-	private void addKey(Document document, Element row, Node node) throws IllegalArgumentException {
+	private Element addKey(Document document, Element row, Node node) throws IllegalArgumentException {
+		Element key = null;
+		
 		if (!node.isEmpty()) {
-			Element key = (Element) getKeyElement( node.getContent() );
+			key = (Element) getKeyElement( node.getContent() );
 			key = (Element) document.adoptNode(key);
 			row.appendChild(key);
 		}
+		
+		return key;
 	}
 	
 	/**
