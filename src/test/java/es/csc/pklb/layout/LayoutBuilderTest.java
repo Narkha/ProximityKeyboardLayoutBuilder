@@ -60,7 +60,7 @@ public class LayoutBuilderTest {
 		HexagonalGrid grid = new HexagonalGrid(1, 1);
 		grid.grid().get(0).get(0).setContent( new Key("1") );
 		
-		builder.toXmlFile(grid, Collections.emptyMap(), outputFile);
+		builder.toXmlFile(grid, Collections.emptyMap(), null, outputFile);
 	}
 	
 	
@@ -73,7 +73,7 @@ public class LayoutBuilderTest {
 		LayoutBuilder builder = new LayoutBuilder(keysFile);		
 		HexagonalGrid grid = createXmlTestGrid();
 		
-		builder.toXmlFile(grid, Collections.emptyMap(), outputFile);
+		builder.toXmlFile(grid, Collections.emptyMap(), "", outputFile);
 
 		assertTrue(String.format("The content of \"%s\" is not the same that the generated file \"%s\"", 
 									expectedFile, outputFile),
@@ -108,7 +108,7 @@ public class LayoutBuilderTest {
 		LayoutBuilder builder = new LayoutBuilder(keysFile);		
 		HexagonalGrid grid = createXmlTestGridSpecialKeys();
 		
-		builder.toXmlFile(grid, Collections.emptyMap(), outputFile);
+		builder.toXmlFile(grid, Collections.emptyMap(), "", outputFile);
 
 		assertTrue(String.format("The content of \"%s\" is not the same that the generated file \"%s\"", 
 									expectedFile, outputFile),
@@ -133,7 +133,7 @@ public class LayoutBuilderTest {
 			put("android:keyHeight", "@dimen/key_height");
 			
 		}};
-		builder.toXmlFile(grid, keyboardAttributes, outputFile);
+		builder.toXmlFile(grid, keyboardAttributes, "@fraction/row_horizontal_gap", outputFile);
 
 		assertTrue(String.format("The content of \"%s\" is not the same that the generated file \"%s\"", 
 									expectedFile, outputFile),

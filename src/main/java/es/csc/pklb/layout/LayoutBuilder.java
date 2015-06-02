@@ -37,6 +37,7 @@ import es.csc.pklb.grid.Node;
  * Class that generates android keyboard layouts. 
  */
 public class LayoutBuilder {	
+	private static final String XML_ATTRIBUTE_KEY_HORIZONTAL_GAP = "android:horizontalGap";
 	private static final String XML_ANDROID_NAMESPACE_URL = "http://schemas.android.com/apk/res/android";
 	private static final String XML_ANDROID_NAMESPACE_NAME = "xmlns:android";
 	
@@ -79,20 +80,25 @@ public class LayoutBuilder {
 	 *   
 	 * @param grid
 	 * @param keyboardAttributes pairs of attributes that will be added to the keyboard element
+	 * @param the of the attribute "android:horizontal" that is assigned to the first key 
+	 *        of the rows of the rows that are shifted.  
+	 *        if null or or empty any value will be assigned.
 	 * @param outputFile
 	 * 
 	 * @throws TransformerException Error during the process of save the xml.
 	 */
-	public void toXmlFile(HexagonalGrid grid, Map<String, String> keyboardAttributes, 
+	public void toXmlFile(HexagonalGrid grid, 
+							Map<String, String> keyboardAttributes, String shiftedRowsGap,
 							String outputFile) throws TransformerException {
-		Document xml = createXml(grid, keyboardAttributes);
+		Document xml = createXml(grid, keyboardAttributes, shiftedRowsGap);
 		saveXml(xml, outputFile);
 	}
 
 	/***
 	 * @throws IllegalArgumentException there is a key in grid with an unknown code
 	*/
-	private Document createXml(HexagonalGrid grid, Map<String, String> keyboardAttributes) 
+	private Document createXml(HexagonalGrid grid, 
+							 	Map<String, String> keyboardAttributes, String shiftedRowsGap) 
 							throws IllegalArgumentException {		
 		try {
 			List<List<Node>> gridRows = grid.grid();
@@ -107,7 +113,7 @@ public class LayoutBuilder {
 			setKeyboardAttributes(keyboard, keyboardAttributes);
 			
 			for(List<Node> gridRow  : gridRows) {
-				addRow(document, keyboard, gridRow);
+				addRow(document, keyboard, gridRow, shiftedRowsGap);
 			}
 			
 			document.appendChild(keyboard);
@@ -130,7 +136,7 @@ public class LayoutBuilder {
 	/***
 	 * @throws IllegalArgumentException there is a key in grid with an unknown code
 	 */
-	private void addRow(Document document, Element keyboard, List<Node> gridRow) 
+	private void addRow(Document document, Element keyboard, List<Node> gridRow, String shiftedRowsGap) 
 			 													throws IllegalArgumentException {
 		Element row = document.createElement(XML_ROW_ELEMENT);
 		Element firstKey = null, lastKey = null;
@@ -143,6 +149,10 @@ public class LayoutBuilder {
 		
 		if (firstKey != null) {
 			firstKey.setAttribute(XML_ATTRIBUTE_KEY_EDGE_FLAG, XML_ATTRIBUTE_KEY_EDGE_FLAG_VALUE_LEFT);
+			if (gridRow.get(0).getX() > 0.0 && shiftedRowsGap != null && !shiftedRowsGap.isEmpty()) {
+				firstKey.setAttribute(XML_ATTRIBUTE_KEY_HORIZONTAL_GAP, shiftedRowsGap);
+			}
+			
 		}
 		
 		if (lastKey != null) {

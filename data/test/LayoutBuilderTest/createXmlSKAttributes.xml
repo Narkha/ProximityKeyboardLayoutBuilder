@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android" android:horizontalGap="0px" android:keyHeight="@dimen/key_height" android:keyWidth="@fraction/key_width" android:verticalGap="@dimen/key_vertical_gap">
     <Row>
-        <Key android:codes="-5" android:isRepeatable="true" android:keyEdgeFlags="left" android:keyIcon="@drawable/sym_keyboard_delete"/>
+        <Key android:codes="-5" android:horizontalGap="@fraction/row_horizontal_gap" android:isRepeatable="true" android:keyEdgeFlags="left" android:keyIcon="@drawable/sym_keyboard_delete"/>
         <Key android:codes="97" android:keyLabel="a"/>
         <Key android:codes="98" android:keyLabel="b"/>
         <Key android:codes="99" android:keyLabel="c"/>
@@ -20,7 +20,7 @@
         <Key android:codes="-1" android:isModifier="true" android:isSticky="true" android:keyEdgeFlags="right" android:keyIcon="@drawable/sym_keyboard_shift"/>
     </Row>
     <Row>
-        <Key android:codes="108" android:keyEdgeFlags="left" android:keyLabel="l"/>
+        <Key android:codes="108" android:horizontalGap="@fraction/row_horizontal_gap" android:keyEdgeFlags="left" android:keyLabel="l"/>
         <Key android:codes="109" android:keyLabel="m"/>
         <Key android:codes="110" android:keyLabel="n"/>
         <Key android:codes="32" android:isRepeatable="true" android:keyIcon="@drawable/sym_keyboard_space"/>
@@ -39,7 +39,7 @@
         <Key android:codes="10" android:keyEdgeFlags="right" android:keyIcon="@drawable/sym_keyboard_return"/>
     </Row>
     <Row>
-        <Key android:codes="-2" android:keyEdgeFlags="left" android:keyLabel="123"/>
+        <Key android:codes="-2" android:horizontalGap="@fraction/row_horizontal_gap" android:keyEdgeFlags="left" android:keyLabel="123"/>
         <Key android:codes="46" android:keyLabel="."/>
         <Key android:codes="119" android:keyLabel="w"/>
         <Key android:codes="120" android:keyLabel="x"/>
